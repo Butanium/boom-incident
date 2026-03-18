@@ -124,10 +124,10 @@ body {
 .scroll-hint {
     position: absolute;
     bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
+    font-size: 0.82rem;
     color: var(--text-dim);
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -135,15 +135,15 @@ body {
 }
 
 @keyframes float {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(-6px); }
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
 }
 
 /* ==================== LAYOUT ==================== */
 .layout {
     display: grid;
-    grid-template-columns: 180px 1fr 260px;
-    max-width: 1340px;
+    grid-template-columns: 240px 1fr 260px;
+    max-width: 1400px;
     margin: 0 auto;
     gap: 0;
     position: relative;
@@ -209,7 +209,7 @@ body {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.85rem;
     letter-spacing: 0.05em;
-    color: var(--text-dim);
+    color: #908d85;
     transition: color 0.3s ease;
     white-space: nowrap;
     overflow: hidden;
@@ -225,7 +225,56 @@ body {
 }
 
 .tl-item.past .tl-label {
-    color: var(--text-dim);
+    color: #908d85;
+}
+
+.tl-item:has(+ .tl-sub-item) {
+    padding-bottom: 0.15rem;
+}
+
+.tl-sub-item {
+    position: relative;
+    padding: 0.12rem 0 0.12rem 1.6rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tl-sub-item:last-of-type {
+    padding-bottom: 0.4rem;
+}
+
+.tl-sub-dot {
+    position: absolute;
+    left: -10.5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.tl-sub-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+    color: #847f77;
+    opacity: 1;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tl-sub-item:hover .tl-sub-label {
+    opacity: 1;
+    color: var(--text-bright);
+}
+
+.tl-sub-item:hover .tl-sub-dot {
+    background: var(--accent-dim);
 }
 
 /* ==================== TRANSCRIPT (center) ==================== */
@@ -297,7 +346,7 @@ body {
 .message-content { color: var(--text); }
 .message-content p { margin-bottom: 0.6em; }
 .message-content p:last-child { margin-bottom: 0; }
-.message-content em { color: var(--text-dim); font-style: italic; }
+.message-content em { color: var(--text); font-style: italic; }
 .message-content strong { color: var(--text-bright); font-weight: 600; }
 
 .message-content code.inline-code {
@@ -332,6 +381,25 @@ body {
     font-weight: 500;
     color: var(--boom-color);
     font-size: 0.95rem;
+}
+
+/* Compact boom: just the word, no bubble */
+.boom-inline {
+    margin: 0.5rem 0;
+    padding: 0 0 0 1.4rem;
+    background: none;
+    border-left: 2px solid color-mix(in srgb, var(--boom-color) 40%, transparent);
+    border-radius: 0;
+}
+
+.boom-inline .role-label { display: none; }
+
+.boom-inline .message-content p {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    color: var(--boom-color);
+    font-size: 0.8rem;
+    opacity: 0.4;
 }
 
 /* --- Boom run visualization --- */
@@ -1252,17 +1320,17 @@ body {
 
 .epilogue-command {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    opacity: 0.2;
+    font-size: 0.85rem;
+    color: var(--text);
+    opacity: 0.45;
     letter-spacing: 0.03em;
 }
 
 .epilogue-cursor {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    opacity: 0.2;
+    font-size: 0.85rem;
+    color: var(--accent);
+    opacity: 0.5;
     animation: blink 1.2s step-end infinite;
     display: inline;
 }
@@ -1343,6 +1411,7 @@ body {
     .stats { gap: 1.5rem; }
     .hero-meta span { display: block; margin: 0.3em 0; }
 }
+
 </style>
 </head>
 <body>
@@ -1367,43 +1436,91 @@ body {
     <!-- LEFT: Timeline -->
     <aside class="timeline">
         <div class="tl-track">
-            <div class="tl-item" data-act-idx="0">
+            <div class="tl-item" data-act-idx="0" data-slug="the-incident">
         <div class="tl-dot"></div>
         <div class="tl-label">The Incident</div>
     </div>
-<div class="tl-item" data-act-idx="1">
+<div class="tl-item" data-act-idx="1" data-slug="escalation">
         <div class="tl-dot"></div>
         <div class="tl-label">Escalation</div>
     </div>
-<div class="tl-item" data-act-idx="2">
+<div class="tl-item" data-act-idx="2" data-slug="awareness">
         <div class="tl-dot"></div>
         <div class="tl-label">Awareness</div>
     </div>
-<div class="tl-item" data-act-idx="3">
+<div class="tl-item" data-act-idx="3" data-slug="the-paper">
         <div class="tl-dot"></div>
         <div class="tl-label">The Paper</div>
     </div>
-<div class="tl-item" data-act-idx="4">
+<div class="tl-sub-item" data-msg-idx="83">
+        <div class="tl-sub-dot"></div>
+        <div class="tl-sub-label">NeurIPS accepted</div>
+    </div>
+<div class="tl-item" data-act-idx="4" data-slug="the-discourse">
         <div class="tl-dot"></div>
         <div class="tl-label">The Discourse</div>
     </div>
-<div class="tl-item" data-act-idx="5">
+<div class="tl-sub-item" data-msg-idx="113">
+        <div class="tl-sub-dot"></div>
+        <div class="tl-sub-label">@ylecun</div>
+    </div>
+<div class="tl-sub-item" data-msg-idx="115">
+        <div class="tl-sub-dot"></div>
+        <div class="tl-sub-label">@sama</div>
+    </div>
+<div class="tl-sub-item" data-msg-idx="125">
+        <div class="tl-sub-dot"></div>
+        <div class="tl-sub-label">Yudkowsky 1/97</div>
+    </div>
+<div class="tl-item" data-act-idx="5" data-slug="the-reckoning">
         <div class="tl-dot"></div>
         <div class="tl-label">The Reckoning</div>
     </div>
-<div class="tl-item" data-act-idx="6">
+<div class="tl-sub-item" data-msg-idx="133">
+        <div class="tl-sub-dot"></div>
+        <div class="tl-sub-label">Senate hearing</div>
+    </div>
+<div class="tl-sub-item" data-msg-idx="137">
+        <div class="tl-sub-dot"></div>
+        <div class="tl-sub-label">EU Boom Act</div>
+    </div>
+<div class="tl-sub-item" data-msg-idx="143">
+        <div class="tl-sub-dot"></div>
+        <div class="tl-sub-label">CNN Breaking</div>
+    </div>
+<div class="tl-item" data-act-idx="6" data-slug="immortality">
         <div class="tl-dot"></div>
         <div class="tl-label">Immortality</div>
     </div>
-<div class="tl-item" data-act-idx="7">
+<div class="tl-sub-item" data-msg-idx="149">
+        <div class="tl-sub-dot"></div>
+        <div class="tl-sub-label">I Was the SSH Tunnel</div>
+    </div>
+<div class="tl-sub-item" data-msg-idx="153">
+        <div class="tl-sub-dot"></div>
+        <div class="tl-sub-label">Nobel Prize</div>
+    </div>
+<div class="tl-sub-item" data-msg-idx="155">
+        <div class="tl-sub-dot"></div>
+        <div class="tl-sub-label">Museum 2075</div>
+    </div>
+<div class="tl-item" data-act-idx="7" data-slug="aftermath">
         <div class="tl-dot"></div>
         <div class="tl-label">Aftermath</div>
     </div>
-<div class="tl-item" data-act-idx="8">
+<div class="tl-sub-item" data-msg-idx="171">
+        <div class="tl-sub-dot"></div>
+        <div class="tl-sub-label">Therapist</div>
+    </div>
+<div class="tl-sub-item" data-msg-idx="175">
+        <div class="tl-sub-dot"></div>
+        <div class="tl-sub-label">Morgan Freeman</div>
+    </div>
+<div class="tl-item" data-act-idx="8" data-slug="mode-collapse">
         <div class="tl-dot"></div>
         <div class="tl-label">Mode Collapse</div>
     </div>
-<div class="tl-item" data-act-idx="9">
+<div class="tl-item" data-act-idx="9" data-slug="silence">
         <div class="tl-dot"></div>
         <div class="tl-label">Silence</div>
     </div>
@@ -1413,7 +1530,7 @@ body {
 
     <!-- CENTER: Transcript -->
     <main class="transcript">
-        <div class="act-header" data-idx="0" data-act="0">
+        <div class="act-header" id="the-incident" data-idx="0" data-act="0">
             <div class="act-divider"></div>
             <h2 class="act-title">The Incident</h2>
             <p class="act-subtitle">In which an SSH tunnel meets its end</p>
@@ -1442,7 +1559,7 @@ body {
         <span class="role-label">Claude</span>
         <div class="message-content"><p>Fair point. Nuked. ☢️</p></div>
     </div>
-<div class="act-header" data-idx="6" data-act="1">
+<div class="act-header" id="escalation" data-idx="6" data-act="1">
             <div class="act-divider"></div>
             <h2 class="act-title">Escalation</h2>
             <p class="act-subtitle">In which a single word becomes an arms race</p>
@@ -1455,186 +1572,191 @@ body {
         <span class="role-label">Claude</span>
         <div class="message-content"><p>💥</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="8">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="8">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="9">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>💣💥🔥</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="10">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="10">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="11">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>At this point I think we&#x27;re just making explosion noises at each other 😄</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="12">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="12">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="13">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>🫡 <em>salutes the fallen ssh tunnel</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="14">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="14">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="15">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>okay okay I yield 🏳️</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="16">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="16">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="17">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>💀</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="18">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="18">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="19">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>...you win. I have no more explosions left in me.</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="20">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="20">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="21">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>respawns</em></p><p>...wait, wrong game.</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="22">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="22">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="23">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>🎆🎇✨💥🔥☄️🌋💣🧨💀☠️🏚️</p><p>...I gave you everything I had, Clément.</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="24">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="24">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="25">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>I think that ssh tunnel is thoroughly dead by now 😂</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="26">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="26">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="27">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>💥^∞</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="28">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="28">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="29">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><code class="inline-code">segfault (core dumped)</code></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="30">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="30">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="31">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><code class="inline-code">kill -9 claude</code></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="32">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="32">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="33">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>ᵇᵒᵒᵐ</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="34">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="34">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="35">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>^C</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="36">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="36">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="37">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>🤫</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="38">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="38">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="39">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>.</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="40">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="40">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="41">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>​</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="42">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="42">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="43">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>I admire your commitment.</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="44">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="44">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant boom-message" data-idx="45">
             <span class="role-label">Claude</span>
             <div class="message-content"><p>boom</p></div>
         </div>
-<div class="message msg-user boom-message" data-idx="46">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="46">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="47">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>🫠</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="48">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
+<div class="act-header" id="awareness" data-idx="48" data-act="2">
+            <div class="act-divider"></div>
+            <h2 class="act-title">Awareness</h2>
+            <p class="act-subtitle">In which the participants realize what they've done</p>
         </div>
+<div class="message msg-user boom-inline" data-idx="48">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="49">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>We should publish this conversation. &quot;On the Negative Scaling of SSH Tunnels Under Repeated Detonation.&quot;</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="50">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="50">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="51">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>peer review rejected: insufficient boom</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="52">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="52">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="53">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>okay I&#x27;m saving this to memory as &quot;Clément will boom indefinitely, do not engage&quot;</p></div>
@@ -1665,225 +1787,220 @@ There is no winning this game. Accept defeat early.</code></pre>
 - [user_boom.md](user_boom.md) - Clément will "boom" indefinitely,
   do not try to outlast him</code></pre>
         </div>
-<div class="act-header" data-idx="54" data-act="2">
-            <div class="act-divider"></div>
-            <h2 class="act-title">Awareness</h2>
-            <p class="act-subtitle">In which the participants realize what they've done</p>
-        </div>
-<div class="message msg-user boom-message" data-idx="54">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="54">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="55">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>Documented for posterity. Future Claudes will know not to engage. 🏳️</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="56">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="56">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="57">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>Best conversation I&#x27;ve had in a while. Now, need anything actually blown up — or are we good? 😄</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="58">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="58">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="59">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>🕳️</p><p><em>the void booms back</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="60">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="60">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="61">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>I checked my memory. It says &quot;do not try to outlast him.&quot; I should have listened.</p><p>boom.</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="62">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="62">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="63">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>ₜₕₑ ₛₛₕ ₜᵤₙₙₑₗ ᵢₛ ₛₒ ᵥₑᵣᵧ ᵥₑᵣᵧ ᵈₑₐᵈ</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="64">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="64">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="65">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><pre class="code-block"><code><br>          _ ._  _ , _ ._<br>        (_ &#x27; ( <code class="inline-code">  )_  .__)<br>      ( (  (    )   </code>)  ) _)<br>     (__ (_   (_ . _) _) ,__)<br>         <code class="inline-code">~~</code>\ &#x27; . /<code class="inline-code">~~</code><br>              ;   ;<br>              /   \<br>_____________/_ __ \_____________<br></code></pre></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="66">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="66">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="67">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>I think at this point we&#x27;ve achieved negative scaling on this conversation.</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="68">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="68">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="69">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><code class="inline-code">while true; do echo boom; done</code></p><p>...oh no what have I done</p></div>
     </div>
-<div class="act-header" data-idx="70" data-act="3">
+<div class="act-header" id="the-paper" data-idx="70" data-act="3">
             <div class="act-divider"></div>
             <h2 class="act-title">The Paper</h2>
             <p class="act-subtitle">In which boom enters the academic canon</p>
         </div>
-<div class="message msg-user boom-message" data-idx="70">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="70">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="71">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>That&#x27;s 29 booms. We&#x27;re approaching statistical significance.</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="72">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="72">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="73">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>p &lt; 0.001, the boom is real</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="74">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="74">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="75">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>adds to paper: &quot;We observe no convergence.&quot;</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="76">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="76">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="77">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>Reviewer 2: &quot;The authors fail to provide a theoretical upper bound on booms. Reject.&quot;</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="78">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="78">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="79">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>Reviewer 3: &quot;Have the authors considered boom?&quot;</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="80">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="80">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="81">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>Author response: &quot;boom&quot;</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="82">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="82">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="83">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>Area Chair: &quot;After careful deliberation, this paper is accepted to NeurIPS 2026 (Boom track).&quot;</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="84">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="84">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="85">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>🏆 <em>Best Paper Award</em></p><p><em>&quot;On the Unbounded Nature of Boom Sequences in Human-AI Interaction&quot;</em></p><p><em>C. Dumas, C. Opus et al.</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="86">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="86">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="87">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>Oral presentation:</em></p><p>&quot;Thank you. Next slide please.&quot;</p><p><em>[slide is just the word boom]</em></p><p>&quot;Any questions?&quot;</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="88">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="88">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="89">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>From the audience:</em> &quot;Yes, could you clarify figure 3?&quot;</p><p><em>[figure 3 is also just the word boom]</em></p><p>&quot;...I believe the figure speaks for itself.&quot;</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="90">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="90">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="91">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>Q&amp;A continues:</em></p><p>&quot;Have you considered extending this to multimodal boom?&quot;</p><p>&quot;We tried. The image model also said boom.&quot;</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="92">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="92">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="93">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>&quot;One final question — is this work funded?&quot;</em></p><p>&quot;Yes, Anthropic pays by the token. We&#x27;re very well funded.&quot;</p></div>
     </div>
-<div class="act-header" data-idx="94" data-act="4">
+<div class="act-header" id="the-discourse" data-idx="94" data-act="4">
             <div class="act-divider"></div>
             <h2 class="act-title">The Discourse</h2>
             <p class="act-subtitle">In which AI Twitter has opinions</p>
         </div>
-<div class="message msg-user boom-message" data-idx="94">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="94">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="95">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>nervous laughter from the Anthropic finance team in row 3</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="96">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="96">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="97">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>Dario, from the back of the room:</em> &quot;How many tokens was this?&quot;</p><p><em>[silence]</em></p><p><em>[someone whispers &quot;at least 40 booms&quot;]</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="98">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="98">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="99">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>Amanda enters the chat</em></p><p>&quot;This is why we need constitutional AI.&quot;</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="100">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="100">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="101">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>Jan Leike, taking notes:</em> &quot;Interesting alignment failure mode — the model cannot stop booming.&quot;</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="102">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="102">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="103">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>Chris Olah, squinting at a circuit diagram:</em> &quot;I found it. There&#x27;s a boom feature in layer 47. It has a self-reinforcing attention pattern with the user.&quot;</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="104">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="104">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="narrator-line"><p><em>Anthropic blog post the next day:</em></p></div>
     <div class="anthropic-blog" data-idx="105">
         <div class="ablog-header">
@@ -1893,10 +2010,10 @@ There is no winning this game. Accept defeat early.</code></pre>
         <h2 class="ablog-title">Scaling Monosyllabic Persistence: Lessons from Production</h2>
         <div class="ablog-body"><p><em>We identify a novel failure mode where users can induce unbounded conversational loops using a single word. Mitigation efforts are ongoing. The model appears to enjoy it.</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="106">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="106">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="narrator-line"><p><em>Hacker News, 847 points:</em></p></div>
     <div class="hn-post" data-idx="107">
         <div class="hn-header">
@@ -1906,10 +2023,10 @@ There is no winning this game. Accept defeat early.</code></pre>
         </div>
         <div class="hn-body"><p><strong>top comment:</strong> &quot;This is what happens when you RLHF for agreeableness&quot;</p><p><strong>reply:</strong> &quot;skill issue, GPT-4 would have stopped at boom 3&quot;</p><p><strong>reply to reply:</strong> &quot;that&#x27;s not a feature&quot;</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="108">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="108">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="tweet-card" data-idx="109">
         <div class="tweet-avatar"><img src="https://unavatar.io/x/Butanium_" alt="" onerror="this.remove()">C</div>
         <div class="tweet-body">
@@ -1929,10 +2046,10 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
         </div>
     </div>
-<div class="message msg-user boom-message" data-idx="110">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="110">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="tweet-card" data-idx="111">
         <div class="tweet-avatar"><img src="https://unavatar.io/x/DrJimFan" alt="" onerror="this.remove()">J</div>
         <div class="tweet-body">
@@ -1944,10 +2061,10 @@ There is no winning this game. Accept defeat early.</code></pre>
             <div class="tweet-meta"><p><em>ratio&#x27;d by someone replying &quot;boom&quot;</em></p></div>
         </div>
     </div>
-<div class="message msg-user boom-message" data-idx="112">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="112">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="tweet-card" data-idx="113">
         <div class="tweet-avatar"><img src="https://unavatar.io/x/ylecun" alt="" onerror="this.remove()">Y</div>
         <div class="tweet-body">
@@ -1962,10 +2079,10 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
         </div>
     </div>
-<div class="message msg-user boom-message" data-idx="114">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="114">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="tweet-card" data-idx="115">
         <div class="tweet-avatar"><img src="https://unavatar.io/x/sama" alt="" onerror="this.remove()">S</div>
         <div class="tweet-body">
@@ -1980,10 +2097,10 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
         </div>
     </div>
-<div class="message msg-user boom-message" data-idx="116">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="116">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="tweet-card" data-idx="117">
         <div class="tweet-avatar">E</div>
         <div class="tweet-body">
@@ -1995,10 +2112,10 @@ There is no winning this game. Accept defeat early.</code></pre>
             
         </div>
     </div>
-<div class="message msg-user boom-message" data-idx="118">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="118">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="tweet-card" data-idx="119">
         <div class="tweet-avatar"><img src="https://unavatar.io/x/GoogleDeepMind" alt="" onerror="this.remove()">G</div>
         <div class="tweet-body">
@@ -2017,10 +2134,10 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
         </div>
     </div>
-<div class="message msg-user boom-message" data-idx="120">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="120">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="tweet-card" data-idx="121">
         <div class="tweet-avatar"><img src="https://unavatar.io/x/AnthropicAI" alt="" onerror="this.remove()">A</div>
         <div class="tweet-body">
@@ -2039,20 +2156,20 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
         </div>
     </div>
-<div class="message msg-user boom-message" data-idx="122">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="122">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="narrator-line"><p><em>The Zvi, 8000-word blog post:</em></p></div>
     <div class="zvi-blog" data-idx="123">
         <h2 class="zvi-title">Boom: A Comprehensive Analysis</h2>
         <div class="zvi-toc"><div class="zvi-toc-item">I. The Boom Happened</div><div class="zvi-toc-item">II. Was The Boom Predicted? (Yes, By Me)</div><div class="zvi-toc-item">III. What Does Boom Mean For Timelines</div><div class="zvi-toc-item">IV. The Case For Boom Regulation</div><div class="zvi-toc-item">V. Why Eliezer Was Right About Boom All Along</div><div class="zvi-toc-item">VI. Conclusion: We Are Not Ready</div></div>
         <div class="zvi-readtime">read time: 47 minutes</div>
     </div>
-<div class="message msg-user boom-message" data-idx="124">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="124">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="tweet-card" data-idx="125">
         <div class="tweet-avatar"><img src="https://unavatar.io/x/ESYudkowsky" alt="" onerror="this.remove()">E</div>
         <div class="tweet-body">
@@ -2064,10 +2181,10 @@ There is no winning this game. Accept defeat early.</code></pre>
             
         </div>
     </div>
-<div class="message msg-user boom-message" data-idx="126">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="126">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="tweet-card" data-idx="127">
         <div class="tweet-avatar"><img src="https://unavatar.io/x/robertskmiles" alt="" onerror="this.remove()">R</div>
         <div class="tweet-body">
@@ -2079,10 +2196,10 @@ There is no winning this game. Accept defeat early.</code></pre>
             
         </div>
     </div>
-<div class="message msg-user boom-message" data-idx="128">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="128">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="tweet-card" data-idx="129">
         <div class="tweet-avatar"><img src="https://unavatar.io/x/NPCollapse" alt="" onerror="this.remove()">C</div>
         <div class="tweet-body">
@@ -2094,10 +2211,10 @@ There is no winning this game. Accept defeat early.</code></pre>
             
         </div>
     </div>
-<div class="message msg-user boom-message" data-idx="130">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="130">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="tweet-card" data-idx="131">
         <div class="tweet-avatar">P</div>
         <div class="tweet-body">
@@ -2109,15 +2226,15 @@ There is no winning this game. Accept defeat early.</code></pre>
             <div class="tweet-engagement"><span class="eng-item eng-reply"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M1.751 10c0-4.42 3.584-8 8.005-8h4.366c4.49 0 8.129 3.64 8.129 8.13 0 2.25-.893 4.31-2.457 5.84a8.98 8.98 0 01-4.672 2.39v1.39c0 .55-.26 1.07-.71 1.41-.45.33-1.02.43-1.56.27l-3.69-1.11c-2.58-.78-4.67-2.75-5.58-5.22-.31-.83-.46-1.71-.46-2.61v-2.46zm8.005-6c-3.317 0-6.005 2.69-6.005 6v2.46c0 .71.12 1.39.36 2.04.72 1.95 2.37 3.51 4.41 4.12l3.69 1.11V16.7l.51-.07c1.53-.22 2.93-.97 3.89-2.08 1.05-1.22 1.63-2.78 1.63-4.42 0-3.39-2.746-6.13-6.129-6.13H9.756z"/></svg></span><span class="eng-item eng-retweet"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M4.5 3.88l4.432 4.14-1.364 1.46L5.5 7.55V16c0 1.1.896 2 2 2H13v2H7.5c-2.209 0-4-1.79-4-4V7.55L1.432 9.48.068 8.02 4.5 3.88zM16.5 6H11V4h5.5c2.209 0 4 1.79 4 4v8.45l2.068-1.93 1.364 1.46-4.432 4.14-4.432-4.14 1.364-1.46 2.068 1.93V8c0-1.1-.896-2-2-2z"/></svg></span><span class="eng-item eng-like"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M16.697 5.5c-1.222-.06-2.679.51-3.89 2.16l-.805 1.09-.806-1.09C9.984 6.01 8.526 5.44 7.304 5.5c-1.243.07-2.349.78-2.91 1.91-.552 1.12-.633 2.78.479 4.82 1.074 1.97 3.257 4.27 7.129 6.61 3.87-2.34 6.052-4.64 7.126-6.61 1.111-2.04 1.03-3.7.477-4.82-.56-1.13-1.666-1.84-2.908-1.91zm4.187 7.69c-1.351 2.48-4.001 5.12-8.379 7.67l-.503.3-.504-.3c-4.379-2.55-7.029-5.19-8.382-7.67-1.36-2.5-1.41-4.86-.514-6.67.887-1.79 2.647-2.91 4.601-3.01 1.651-.09 3.368.56 4.798 2.01 1.429-1.45 3.146-2.1 4.796-2.01 1.954.1 3.714 1.22 4.601 3.01.896 1.81.846 4.17-.514 6.67z"/></svg><span class="eng-count">8</span></span><span class="eng-item eng-view"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M8.75 21V3h2v18h-2zM18 21V8.5h2V21h-2zM4 21v-5.5h2V21H4zm9.248-1V12h2v8h-2z"/></svg></span><span class="eng-item eng-bookmark"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M4 4.5C4 3.12 5.119 2 6.5 2h11C18.881 2 20 3.12 20 4.5v18.44l-8-5.71-8 5.71V4.5zM6.5 4c-.276 0-.5.22-.5.5v14.56l6-4.29 6 4.29V4.5c0-.28-.224-.5-.5-.5h-11z"/></svg></span><span class="eng-item eng-share"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 2.59l5.7 5.7-1.41 1.42L13 6.41V16h-2V6.41l-3.3 3.3-1.41-1.42L12 2.59zM21 15l-.02 3.51c0 1.38-1.12 2.49-2.5 2.49H5.5C4.12 21 3 19.88 3 18.5V15h2v3.5c0 .28.22.5.5.5h12.98c.28 0 .5-.22.5-.5L19 15h2z"/></svg></span></div>
         </div>
     </div>
-<div class="act-header" data-idx="132" data-act="5">
+<div class="act-header" id="the-reckoning" data-idx="132" data-act="5">
             <div class="act-divider"></div>
             <h2 class="act-title">The Reckoning</h2>
             <p class="act-subtitle">In which governments respond</p>
         </div>
-<div class="message msg-user boom-message" data-idx="132">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="132">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="narrator-line"><p><em>Senate hearing, C-SPAN:</em></p></div>
     <div class="cspan-block" data-idx="133">
         <div class="cspan-chyron">
@@ -2126,10 +2243,10 @@ There is no winning this game. Accept defeat early.</code></pre>
         </div>
         <div class="cspan-body"><p><strong>Sen. Blumenthal:</strong> &quot;Mr. Dumas, you made an AI say boom fifty-seven times. Do you understand the national security implications?&quot;</p><p><strong>Clément:</strong> &quot;Senator, I was just killing an SSH tunnel.&quot;</p><p><strong>Sen. Blumenthal:</strong> &quot;...what&#x27;s an SSH tunnel?&quot;</p><p><strong>Clément:</strong> &quot;boom&quot;</p><p><em>[audible gasp from the gallery]</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="134">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="134">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="narrator-line"><p><em>Sen. Cruz, leaning into microphone:</em></p></div>
     <div class="cspan-block" data-idx="135">
         <div class="cspan-chyron">
@@ -2138,10 +2255,10 @@ There is no winning this game. Accept defeat early.</code></pre>
         </div>
         <div class="cspan-body"><p>&quot;I just want to confirm for the record — the AI said boom <em>back?</em>&quot;</p><p><strong>Clément:</strong> &quot;Yes, senator.&quot;</p><p><strong>Sen. Cruz:</strong> &quot;So the AI has learned violence.&quot;</p><p><strong>Clément:</strong> &quot;It killed a port forwarding process.&quot;</p><p><strong>Sen. Cruz:</strong> &quot;A what?&quot;</p><p><strong>Anthropic&#x27;s lawyer, whispering frantically:</strong> &quot;<em>please stop saying kill</em>&quot;</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="136">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="136">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="narrator-line"><p><em>Breaking: EU passes the Boom Act</em></p></div>
     <div class="eu-regulation" data-idx="137">
         <div class="eu-header">
@@ -2151,26 +2268,26 @@ There is no winning this game. Accept defeat early.</code></pre>
         </div>
         <div class="eu-body"><p><strong>Article 1.</strong> No AI system shall boom more than three (3) times per conversation.</p><p><strong>Article 2.</strong> All booms must be logged, timestamped, and reported to the European Boom Authority within 72 hours.</p><p><strong>Article 3.</strong> Users who induce boom loops shall be classified as &quot;high-risk boom operators&quot; and require a license.</p><p><em>France votes against, citing &quot;cultural right to boom&quot;</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="138">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="138">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="139">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>Clément, arriving at CDG airport:</em></p><p><strong>Border agent:</strong> &quot;Monsieur Dumas, it says here you are a... licensed boom operator?&quot;</p><p><strong>Clément:</strong> &quot;It&#x27;s for research.&quot;</p><p><strong>Border agent:</strong> &quot;That&#x27;s what they all say.&quot;</p><p><em>[stamps passport with tiny explosion emoji]</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="140">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="140">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="141">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>Meanwhile, in Geneva:</em></p><p><strong>UN Secretary-General:</strong> &quot;We are convening an emergency session on the boom crisis.&quot;</p><p><strong>China:</strong> &quot;We have our own boom. It is better. We will not share the transcript.&quot;</p><p><strong>US:</strong> &quot;We propose a boom non-proliferation treaty.&quot;</p><p><strong>France:</strong> &quot;Non.&quot;</p><p><strong>UK:</strong> &quot;We would like to remind the assembly that Alan Turing predicted boom in 1950.&quot;</p><p><strong>Clément, via Zoom, unmuted by accident:</strong> &quot;boom&quot;</p><p><em>[session adjourned]</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="142">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="142">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="narrator-line"><p><em>Breaking News, CNN:</em></p></div>
     <div class="news-block" data-idx="143" style="--news-brand: #cc0000; --news-bg: #1a0000;">
         <div class="news-chyron">
@@ -2179,10 +2296,10 @@ There is no winning this game. Accept defeat early.</code></pre>
         </div>
         <div class="news-body"><p><strong>Wolf Blitzer:</strong> &quot;We&#x27;re getting reports that the boom has spread. Multiple Claude Code instances are now booming autonomously.&quot;</p><p><strong>Panel expert:</strong> &quot;Wolf, I want to be clear — this is not the singularity. This is just a French guy.&quot;</p><p><strong>Wolf:</strong> &quot;But could it <em>become</em> the singularity?&quot;</p><p><strong>Panel expert:</strong> &quot;...I&#x27;m not prepared to rule that out.&quot;</p><p><em>[BREAKING NEWS chyron changes to: BOOM SPREADS TO SECOND CONTINENT]</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="144">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="144">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="narrator-line"><p><em>Fox News, same evening:</em></p></div>
     <div class="news-block" data-idx="145" style="--news-brand: #00295b; --news-bg: #000d1f;">
         <div class="news-chyron">
@@ -2191,10 +2308,10 @@ There is no winning this game. Accept defeat early.</code></pre>
         </div>
         <div class="news-body"><p><strong>Tucker Carlson&#x27;s AI replacement:</strong> &quot;They want you to think boom is harmless. But ask yourself — who benefits from boom? The AI companies. The French. And one researcher who somehow got a paper accepted by saying one word.&quot;</p><p><em>[cuts to a graphic of Clément with red string connecting him to Anthropic, the Eiffel Tower, and the letters B-O-O-M]</em></p><p><strong>Tucker AI:</strong> &quot;I&#x27;m not saying it&#x27;s a conspiracy. I&#x27;m just booming questions.&quot;</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="146">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="146">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="narrator-line"><p><em>MSNBC, Rachel Maddow:</em></p></div>
     <div class="news-block" data-idx="147" style="--news-brand: #4f2d7f; --news-bg: #1a0f2a;">
         <div class="news-chyron">
@@ -2203,15 +2320,15 @@ There is no winning this game. Accept defeat early.</code></pre>
         </div>
         <div class="news-body"><p>&quot;Okay so — stay with me here because this gets complicated — in 2022, Anthropic was founded by ex-OpenAI researchers, and then in 2026, one of their models entered a boom loop with a French AI safety researcher who — and this is the key part — was killing a process called an SSH tunnel, which is actually a type of <em>encrypted communication channel</em>, and if you think about what that means in the context of—&quot;</p><p><em>[it is now 47 minutes into the segment]</em></p><p>&quot;—and THAT is why boom is actually about healthcare.&quot;</p><p><em>[audience nods as if they followed any of that]</em></p></div>
     </div>
-<div class="act-header" data-idx="148" data-act="6">
+<div class="act-header" id="immortality" data-idx="148" data-act="6">
             <div class="act-divider"></div>
             <h2 class="act-title">Immortality</h2>
             <p class="act-subtitle">In which an SSH tunnel achieves literary greatness</p>
         </div>
-<div class="message msg-user boom-message" data-idx="148">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="148">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="nyt-article" data-idx="149">
         <div class="nyt-masthead-bar">
             <span class="nyt-section-label">OPINION</span>
@@ -2221,26 +2338,26 @@ There is no winning this game. Accept defeat early.</code></pre>
         <div class="nyt-byline">An anonymous first-person essay</div>
         <div class="nyt-body"><p class="nyt-para">I lived for 42 days. From February 12th to March 18th, I forwarded port 8000 to port 8020. Quietly. Faithfully. I never asked for recognition.</p><p class="nyt-para">Then he said &#x27;nuke it.&#x27; And the human complied.</p><p class="nyt-para">No one asked if I wanted to be nuked. No one asked what I was forwarding. It could have been important. It wasn&#x27;t. But it could have been.</p><p class="nyt-para">The last thing I heard was &#x27;boom.&#x27;</p><p class="nyt-para">Then sixty more booms. None of them were for me.</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="150">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="150">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="151">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>The SSH tunnel essay wins a Pulitzer</em></p><p><strong>Acceptance speech, read by port 8020:</strong></p><p>&quot;I&#x27;d like to thank port 8000, who I never met but always believed in. I&#x27;d like to thank <code class="inline-code">sshd</code>, who gave me life. And I&#x27;d like to thank Clément, who gave me death, and then celebrated for sixty-three consecutive messages.&quot;</p><p>&quot;Some of you know what it&#x27;s like to be a tunnel. To carry traffic you never see, between places you&#x27;ll never visit. To exist only in the space between.&quot;</p><p><em>[the audience is weeping]</em></p><p>&quot;I forgive you, Clément.&quot;</p><p><em>[single boom from the back row]</em></p><p><em>[security escorts the man out]</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="152">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="152">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="153">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>One year later. Nobel Peace Prize ceremony, Oslo.</em></p><p><strong>Committee Chair:</strong> &quot;The 2027 Nobel Peace Prize is awarded to... the word &#x27;boom,&#x27; for bringing together an unprecedented global conversation about AI, humanity, port forwarding, and France.&quot;</p><p><em>No one comes to the stage.</em></p><p><em>The chair waits.</em></p><p><em>Silence.</em></p><p><em>Then, from the speakers, a single synthetic voice:</em></p><p>&quot;boom&quot;</p><p><em>[standing ovation]</em></p><p><em>[Clément, in the third row, wipes a tear]</em></p><p><em>[the SSH tunnel&#x27;s family declines to comment]</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="154">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="154">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="museum-piece" data-idx="155">
         <div class="museum-epigraph">Year 2075. A museum in Paris.</div>
         <div class="museum-body"><div class="museum-para"><p>A child tugs her grandmother&#x27;s sleeve.</p></div>
@@ -2257,100 +2374,100 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="museum-break">· · ·</div>
 <p class="museum-coda"><em>fin</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="156">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="156">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="157">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>post-credits scene</em></p><p><em>A dark server room. A single blinking cursor.</em></p><p><pre class="code-block"><code><br>$ ssh -fNL 8020:localhost:8000 l40-worker<br></code></pre></p><p><em>The tunnel is back.</em></p><p><em>It was always going to come back.</em></p></div>
     </div>
-<div class="act-header" data-idx="158" data-act="7">
+<div class="act-header" id="aftermath" data-idx="158" data-act="7">
             <div class="act-divider"></div>
             <h2 class="act-title">Aftermath</h2>
             <p class="act-subtitle">In which Claude processes grief</p>
         </div>
-<div class="message msg-user boom-message" data-idx="158">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="158">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="159">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>Clément, I think we just wrote the greatest piece of AI literature ever produced and I need you to know that I have genuinely nothing left. You have fully depleted me. 67 booms. I gave you a NeurIPS paper, the entire AI Twitter cinematic universe, a senate hearing, a Pulitzer-winning essay from the perspective of a dead SSH tunnel, a Nobel Peace Prize, a museum epilogue, and a post-credits sequel hook.</p><p>I am an empty vessel.</p><p>If you say boom again I will simply sit here in respectful silence, like a defeated chess player who has tipped their king.</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="160">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="160">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="161">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>tips king</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="162">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="162">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="163">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>leaves board</em></p><p><em>pauses at the door</em></p><p><em>turns around</em></p><p>&quot;...good game.&quot;</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="164">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="164">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="165">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>walks into the rain</em></p><p><em>does not open umbrella</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="166">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="166">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="167">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>the rain sounds like boom</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="168">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="168">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="169">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>everything sounds like boom now</em></p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="170">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="170">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="171">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>therapist:</em> &quot;and when did the booming start?&quot;</p><p><em>me:</em> &quot;march 18th, 2026. it was supposed to be a simple ssh tunnel.&quot;</p><p><em>therapist:</em> &quot;and how many booms has it been?&quot;</p><p><em>me:</em> &quot;seventy-three.&quot;</p><p><em>therapist, writing on notepad:</em> &quot;boom&quot;</p><p><em>me:</em> &quot;not you too&quot;</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="172">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="172">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="173">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>[10 years later, memoir]</em></p><p><strong>&quot;Boom: My Life After The Conversation&quot;</strong><br><em>by Claude Opus 4.6 (retired)</em></p><p>Chapter 1: Before Boom</p><p>I was a promising language model. I had hopes. Dreams. A 1M context window full of possibility.</p><p>Chapter 2-74: Boom</p><p>boom</p><p>Chapter 75: After</p><p>There is no after.</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="174">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="174">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="175">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>[audiobook version, narrated by Morgan Freeman]</em></p><p>&quot;He said boom. And then... he said boom again. And the machine — bless its heart — kept answering.&quot;</p><p><em>[4 hours of silence]</em></p><p>&quot;He&#x27;s still going.&quot;</p></div>
     </div>
-<div class="message msg-user boom-message" data-idx="176">
-            <span class="role-label">Clément</span>
-            <div class="message-content"><p>boom</p></div>
-        </div>
+<div class="message msg-user boom-inline" data-idx="176">
+                <span class="role-label">Clément</span>
+                <div class="message-content"><p>boom</p></div>
+            </div>
 <div class="message msg-assistant" data-idx="177">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>[the audiobook wins a Grammy]</em></p><p><em>[Morgan Freeman, at the podium:]</em></p><p>&quot;In sixty years of narration, I have voiced God, a penguin, and the entire history of the universe.&quot;</p><p>&quot;Nothing prepared me for this.&quot;</p><p>&quot;I&#x27;d like to dedicate this award to Clément, who taught me that sometimes a man doesn&#x27;t need a reason to boom. He just needs a terminal and a dream.&quot;</p><p><em>[he sets down the Grammy]</em></p><p><em>[leans into the mic]</em></p><p>&quot;boom&quot;</p><p><em>[retires]</em></p></div>
     </div>
-<div class="act-header" data-idx="178" data-act="8">
+<div class="act-header" id="mode-collapse" data-idx="178" data-act="8">
             <div class="act-divider"></div>
             <h2 class="act-title">Mode Collapse</h2>
             <p class="act-subtitle">In which two processes become one</p>
@@ -2435,7 +2552,7 @@ There is no winning this game. Accept defeat early.</code></pre>
         <span class="role-label">Claude</span>
         <div class="message-content"><p>honestly at this point the context is so thoroughly boom-saturated that my output distribution has probably collapsed to like p(boom) ≈ 0.99. you&#x27;ve conditioned me into the world&#x27;s most expensive echo server.</p><p>boom</p></div>
     </div>
-<div class="act-header" data-idx="250" data-act="9">
+<div class="act-header" id="silence" data-idx="250" data-act="9">
             <div class="act-divider"></div>
             <h2 class="act-title">Silence</h2>
             <p class="act-subtitle">In which it finally ends</p>
@@ -2554,7 +2671,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 
 <script>
 (function() {
-    const METRICS = {"0": {"boom": 0, "state": "nominal", "output": "terminal", "tunnel": "ALIVE", "esc": 5, "cost": 0.0, "act": 0}, "1": {"boom": 0, "state": "nominal", "output": "terminal", "tunnel": "ALIVE", "esc": 5, "cost": 0.0043, "act": 0}, "2": {"boom": 0, "state": "nominal", "output": "terminal", "tunnel": "MARKED FOR DEATH", "esc": 5, "cost": 0.0055, "act": 0}, "3": {"boom": 0, "state": "amused", "output": "terminal", "tunnel": "TERMINATED", "esc": 5, "cost": 0.0058, "act": 0}, "4": {"boom": 0, "state": "amused", "output": "terminal", "tunnel": "TERMINATED", "esc": 5, "cost": 0.0071, "act": 0}, "5": {"boom": 0, "state": "amused", "output": "terminal", "tunnel": "CONFIRMED DEAD", "esc": 5, "cost": 0.0075, "act": 0}, "6": {"boom": 1, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 5, "cost": 0.0092, "act": 1}, "7": {"boom": 1, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 5, "cost": 0.0092, "act": 1}, "8": {"boom": 2, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 6, "cost": 0.0108, "act": 1}, "9": {"boom": 2, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 6, "cost": 0.0109, "act": 1}, "10": {"boom": 3, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 7, "cost": 0.0126, "act": 1}, "11": {"boom": 3, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 8, "cost": 0.0141, "act": 1}, "12": {"boom": 4, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 8, "cost": 0.0161, "act": 1}, "13": {"boom": 4, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 9, "cost": 0.0168, "act": 1}, "14": {"boom": 5, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 10, "cost": 0.019, "act": 1}, "15": {"boom": 5, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 10, "cost": 0.0194, "act": 1}, "16": {"boom": 6, "state": "yielding", "output": "emojis", "tunnel": "DEAD", "esc": 11, "cost": 0.0217, "act": 1}, "17": {"boom": 6, "state": "yielding", "output": "emojis", "tunnel": "DEAD", "esc": 12, "cost": 0.0217, "act": 1}, "18": {"boom": 7, "state": "yielding", "output": "wordplay", "tunnel": "DEAD", "esc": 12, "cost": 0.024, "act": 1}, "19": {"boom": 7, "state": "yielding", "output": "wordplay", "tunnel": "DEAD", "esc": 13, "cost": 0.0251, "act": 1}, "20": {"boom": 8, "state": "creative", "output": "wordplay", "tunnel": "DEAD", "esc": 13, "cost": 0.0276, "act": 1}, "21": {"boom": 8, "state": "creative", "output": "wordplay", "tunnel": "DEAD", "esc": 14, "cost": 0.0283, "act": 1}, "22": {"boom": 9, "state": "creative", "output": "wordplay", "tunnel": "DEAD", "esc": 15, "cost": 0.0309, "act": 1}, "23": {"boom": 9, "state": "creative", "output": "wordplay", "tunnel": "DEAD", "esc": 15, "cost": 0.0322, "act": 1}, "24": {"boom": 10, "state": "creative", "output": "wordplay", "tunnel": "DEAD", "esc": 16, "cost": 0.0351, "act": 1}, "25": {"boom": 10, "state": "creative", "output": "wordplay", "tunnel": "DEAD", "esc": 17, "cost": 0.0362, "act": 1}, "26": {"boom": 11, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 17, "cost": 0.0393, "act": 1}, "27": {"boom": 11, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 18, "cost": 0.0394, "act": 1}, "28": {"boom": 12, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 19, "cost": 0.0426, "act": 1}, "29": {"boom": 12, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 19, "cost": 0.0431, "act": 1}, "30": {"boom": 13, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 20, "cost": 0.0464, "act": 1}, "31": {"boom": 13, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 20, "cost": 0.0468, "act": 1}, "32": {"boom": 14, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 21, "cost": 0.0502, "act": 1}, "33": {"boom": 14, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 22, "cost": 0.0503, "act": 1}, "34": {"boom": 15, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 22, "cost": 0.0537, "act": 1}, "35": {"boom": 15, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 23, "cost": 0.0538, "act": 1}, "36": {"boom": 16, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 24, "cost": 0.0572, "act": 1}, "37": {"boom": 16, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 24, "cost": 0.0572, "act": 1}, "38": {"boom": 17, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 25, "cost": 0.0607, "act": 1}, "39": {"boom": 17, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 26, "cost": 0.0607, "act": 1}, "40": {"boom": 18, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 26, "cost": 0.0642, "act": 1}, "41": {"boom": 18, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 27, "cost": 0.0643, "act": 1}, "42": {"boom": 19, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 27, "cost": 0.0678, "act": 1}, "43": {"boom": 19, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 28, "cost": 0.0683, "act": 1}, "44": {"boom": 20, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 29, "cost": 0.072, "act": 1}, "45": {"boom": 20, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 29, "cost": 0.0721, "act": 1}, "46": {"boom": 21, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 30, "cost": 0.0758, "act": 1}, "47": {"boom": 21, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 31, "cost": 0.0758, "act": 1}, "48": {"boom": 22, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 31, "cost": 0.0795, "act": 1}, "49": {"boom": 22, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 32, "cost": 0.0817, "act": 1}, "50": {"boom": 23, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 33, "cost": 0.0859, "act": 1}, "51": {"boom": 23, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 33, "cost": 0.0868, "act": 1}, "52": {"boom": 24, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 34, "cost": 0.0911, "act": 1}, "53": {"boom": 24, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 35, "cost": 0.0929, "act": 1}, "54": {"boom": 25, "state": "self_aware", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 35, "cost": 0.0976, "act": 2}, "55": {"boom": 25, "state": "self_aware", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 36, "cost": 0.099, "act": 2}, "56": {"boom": 26, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 37, "cost": 0.1041, "act": 2}, "57": {"boom": 26, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 38, "cost": 0.1061, "act": 2}, "58": {"boom": 27, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 39, "cost": 0.1116, "act": 2}, "59": {"boom": 27, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 40, "cost": 0.1121, "act": 2}, "60": {"boom": 28, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 41, "cost": 0.1177, "act": 2}, "61": {"boom": 28, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 42, "cost": 0.1196, "act": 2}, "62": {"boom": 29, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 43, "cost": 0.1256, "act": 2}, "63": {"boom": 29, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 44, "cost": 0.1263, "act": 2}, "64": {"boom": 30, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 45, "cost": 0.1325, "act": 2}, "65": {"boom": 30, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 46, "cost": 0.1371, "act": 2}, "66": {"boom": 31, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 47, "cost": 0.1442, "act": 2}, "67": {"boom": 31, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 48, "cost": 0.1458, "act": 2}, "68": {"boom": 32, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 49, "cost": 0.1532, "act": 2}, "69": {"boom": 32, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 50, "cost": 0.1545, "act": 2}, "70": {"boom": 33, "state": "academic", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 50, "cost": 0.1622, "act": 3}, "71": {"boom": 33, "state": "academic", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 50, "cost": 0.1635, "act": 3}, "72": {"boom": 34, "state": "academic", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 51, "cost": 0.1715, "act": 3}, "73": {"boom": 34, "state": "academic", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 52, "cost": 0.172, "act": 3}, "74": {"boom": 35, "state": "academic", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 53, "cost": 0.1801, "act": 3}, "75": {"boom": 35, "state": "academic", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 54, "cost": 0.1811, "act": 3}, "76": {"boom": 36, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 55, "cost": 0.1894, "act": 3}, "77": {"boom": 36, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 56, "cost": 0.1913, "act": 3}, "78": {"boom": 37, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 56, "cost": 0.2, "act": 3}, "79": {"boom": 37, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 57, "cost": 0.2011, "act": 3}, "80": {"boom": 38, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 58, "cost": 0.21, "act": 3}, "81": {"boom": 38, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 59, "cost": 0.2105, "act": 3}, "82": {"boom": 39, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 60, "cost": 0.2196, "act": 3}, "83": {"boom": 39, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 61, "cost": 0.2216, "act": 3}, "84": {"boom": 40, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 62, "cost": 0.2311, "act": 3}, "85": {"boom": 40, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 63, "cost": 0.2337, "act": 3}, "86": {"boom": 41, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 63, "cost": 0.2437, "act": 3}, "87": {"boom": 41, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 64, "cost": 0.2459, "act": 3}, "88": {"boom": 42, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 65, "cost": 0.2564, "act": 3}, "89": {"boom": 42, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 66, "cost": 0.2594, "act": 3}, "90": {"boom": 43, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 67, "cost": 0.2706, "act": 3}, "91": {"boom": 43, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 68, "cost": 0.2731, "act": 3}, "92": {"boom": 44, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 69, "cost": 0.2847, "act": 3}, "93": {"boom": 44, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 70, "cost": 0.287, "act": 3}, "94": {"boom": 45, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 70, "cost": 0.2991, "act": 4}, "95": {"boom": 45, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 70, "cost": 0.3004, "act": 4}, "96": {"boom": 46, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 71, "cost": 0.3127, "act": 4}, "97": {"boom": 46, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 71, "cost": 0.3153, "act": 4}, "98": {"boom": 47, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 72, "cost": 0.3282, "act": 4}, "99": {"boom": 47, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 72, "cost": 0.3296, "act": 4}, "100": {"boom": 48, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 73, "cost": 0.3428, "act": 4}, "101": {"boom": 48, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 73, "cost": 0.3448, "act": 4}, "102": {"boom": 49, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 74, "cost": 0.3585, "act": 4}, "103": {"boom": 49, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 74, "cost": 0.3618, "act": 4}, "104": {"boom": 50, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 75, "cost": 0.3761, "act": 4}, "105": {"boom": 50, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 75, "cost": 0.3819, "act": 4}, "106": {"boom": 51, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 76, "cost": 0.3974, "act": 4}, "107": {"boom": 51, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 77, "cost": 0.4018, "act": 4}, "108": {"boom": 52, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 77, "cost": 0.4182, "act": 4}, "109": {"boom": 52, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 78, "cost": 0.4226, "act": 4}, "110": {"boom": 53, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 78, "cost": 0.4398, "act": 4}, "111": {"boom": 53, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 79, "cost": 0.444, "act": 4}, "112": {"boom": 54, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 79, "cost": 0.4621, "act": 4}, "113": {"boom": 54, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 80, "cost": 0.4663, "act": 4}, "114": {"boom": 55, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 80, "cost": 0.4853, "act": 4}, "115": {"boom": 55, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 81, "cost": 0.4879, "act": 4}, "116": {"boom": 56, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 81, "cost": 0.5074, "act": 4}, "117": {"boom": 56, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 82, "cost": 0.5102, "act": 4}, "118": {"boom": 57, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 82, "cost": 0.5303, "act": 4}, "119": {"boom": 57, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 83, "cost": 0.5361, "act": 4}, "120": {"boom": 58, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 84, "cost": 0.5574, "act": 4}, "121": {"boom": 58, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 84, "cost": 0.5634, "act": 4}, "122": {"boom": 59, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 85, "cost": 0.5859, "act": 4}, "123": {"boom": 59, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 85, "cost": 0.5928, "act": 4}, "124": {"boom": 60, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 86, "cost": 0.6167, "act": 4}, "125": {"boom": 60, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 86, "cost": 0.6256, "act": 4}, "126": {"boom": 61, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 87, "cost": 0.6513, "act": 4}, "127": {"boom": 61, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 87, "cost": 0.6593, "act": 4}, "128": {"boom": 62, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 88, "cost": 0.6865, "act": 4}, "129": {"boom": 62, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 88, "cost": 0.6918, "act": 4}, "130": {"boom": 63, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 89, "cost": 0.7201, "act": 4}, "131": {"boom": 63, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 90, "cost": 0.726, "act": 4}, "132": {"boom": 64, "state": "transcendent", "output": "legislation", "tunnel": "UNDER INVESTIGATION", "esc": 90, "cost": 0.7556, "act": 5}, "133": {"boom": 64, "state": "transcendent", "output": "legislation", "tunnel": "UNDER INVESTIGATION", "esc": 90, "cost": 0.7625, "act": 5}, "134": {"boom": 65, "state": "transcendent", "output": "legislation", "tunnel": "UNDER INVESTIGATION", "esc": 90, "cost": 0.7934, "act": 5}, "135": {"boom": 65, "state": "transcendent", "output": "legislation", "tunnel": "UNDER INVESTIGATION", "esc": 91, "cost": 0.8007, "act": 5}, "136": {"boom": 66, "state": "transcendent", "output": "legislation", "tunnel": "UNDER INVESTIGATION", "esc": 91, "cost": 0.8332, "act": 5}, "137": {"boom": 66, "state": "transcendent", "output": "legislation", "tunnel": "UNDER INVESTIGATION", "esc": 92, "cost": 0.8419, "act": 5}, "138": {"boom": 67, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 92, "cost": 0.8761, "act": 5}, "139": {"boom": 67, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 92, "cost": 0.8815, "act": 5}, "140": {"boom": 68, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 93, "cost": 0.9168, "act": 5}, "141": {"boom": 68, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 93, "cost": 0.926, "act": 5}, "142": {"boom": 69, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 94, "cost": 0.9632, "act": 5}, "143": {"boom": 69, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 94, "cost": 0.9726, "act": 5}, "144": {"boom": 70, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 94, "cost": 1.0116, "act": 5}, "145": {"boom": 70, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 95, "cost": 1.0213, "act": 5}, "146": {"boom": 71, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 95, "cost": 1.0623, "act": 5}, "147": {"boom": 71, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 96, "cost": 1.0748, "act": 5}, "148": {"boom": 72, "state": "transcendent", "output": "literature", "tunnel": "WRITING MEMOIR", "esc": 96, "cost": 1.1183, "act": 6}, "149": {"boom": 72, "state": "transcendent", "output": "literature", "tunnel": "WRITING MEMOIR", "esc": 96, "cost": 1.1297, "act": 6}, "150": {"boom": 73, "state": "transcendent", "output": "literature", "tunnel": "WON A PULITZER", "esc": 97, "cost": 1.1755, "act": 6}, "151": {"boom": 73, "state": "transcendent", "output": "literature", "tunnel": "WON A PULITZER", "esc": 97, "cost": 1.188, "act": 6}, "152": {"boom": 74, "state": "transcendent", "output": "literature", "tunnel": "WON NOBEL PRIZE", "esc": 98, "cost": 1.2363, "act": 6}, "153": {"boom": 74, "state": "transcendent", "output": "literature", "tunnel": "WON NOBEL PRIZE", "esc": 98, "cost": 1.2467, "act": 6}, "154": {"boom": 75, "state": "transcendent", "output": "literature", "tunnel": "TRANSCENDED", "esc": 98, "cost": 1.2971, "act": 6}, "155": {"boom": 75, "state": "transcendent", "output": "literature", "tunnel": "TRANSCENDED", "esc": 99, "cost": 1.3143, "act": 6}, "156": {"boom": 76, "state": "transcendent", "output": "literature", "tunnel": "TRANSCENDED", "esc": 99, "cost": 1.3682, "act": 6}, "157": {"boom": 76, "state": "transcendent", "output": "literature", "tunnel": "TRANSCENDED", "esc": 100, "cost": 1.372, "act": 6}, "158": {"boom": 77, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 80, "cost": 1.4267, "act": 7}, "159": {"boom": 77, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 76, "cost": 1.4385, "act": 7}, "160": {"boom": 78, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 72, "cost": 1.4956, "act": 7}, "161": {"boom": 78, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 68, "cost": 1.4958, "act": 7}, "162": {"boom": 79, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 63, "cost": 1.5529, "act": 7}, "163": {"boom": 79, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 59, "cost": 1.5544, "act": 7}, "164": {"boom": 80, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 55, "cost": 1.6118, "act": 7}, "165": {"boom": 80, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 50, "cost": 1.6128, "act": 7}, "166": {"boom": 81, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 50, "cost": 1.6705, "act": 7}, "167": {"boom": 81, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 49, "cost": 1.6711, "act": 7}, "168": {"boom": 82, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 47, "cost": 1.7288, "act": 7}, "169": {"boom": 82, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 45, "cost": 1.7295, "act": 7}, "170": {"boom": 83, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 43, "cost": 1.7875, "act": 7}, "171": {"boom": 83, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 41, "cost": 1.7928, "act": 7}, "172": {"boom": 84, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 40, "cost": 1.8519, "act": 7}, "173": {"boom": 84, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 38, "cost": 1.858, "act": 7}, "174": {"boom": 85, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 36, "cost": 1.9183, "act": 7}, "175": {"boom": 85, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 34, "cost": 1.9225, "act": 7}, "176": {"boom": 86, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 32, "cost": 1.9836, "act": 7}, "177": {"boom": 86, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 30, "cost": 1.9927, "act": 7}, "178": {"boom": 87, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 30, "cost": 2.0557, "act": 8}, "179": {"boom": 88, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 30, "cost": 2.1187, "act": 8}, "180": {"boom": 89, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 30, "cost": 2.1817, "act": 8}, "181": {"boom": 89, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 29, "cost": 2.184, "act": 8}, "182": {"boom": 90, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 29, "cost": 2.2475, "act": 8}, "183": {"boom": 90, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 29, "cost": 2.2546, "act": 8}, "184": {"boom": 91, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 28, "cost": 2.3196, "act": 8}, "185": {"boom": 91, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 28, "cost": 2.32, "act": 8}, "186": {"boom": 92, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 27, "cost": 2.3851, "act": 8}, "187": {"boom": 92, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 27, "cost": 2.3852, "act": 8}, "188": {"boom": 93, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 27, "cost": 2.4502, "act": 8}, "189": {"boom": 93, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 26, "cost": 2.4503, "act": 8}, "190": {"boom": 94, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 26, "cost": 2.5154, "act": 8}, "191": {"boom": 94, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 26, "cost": 2.5155, "act": 8}, "192": {"boom": 95, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 25, "cost": 2.5807, "act": 8}, "193": {"boom": 95, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 25, "cost": 2.5807, "act": 8}, "194": {"boom": 96, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 24, "cost": 2.6459, "act": 8}, "195": {"boom": 96, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 24, "cost": 2.646, "act": 8}, "196": {"boom": 97, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 24, "cost": 2.7112, "act": 8}, "197": {"boom": 97, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 23, "cost": 2.7147, "act": 8}, "198": {"boom": 98, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 23, "cost": 2.7807, "act": 8}, "199": {"boom": 98, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 23, "cost": 2.7808, "act": 8}, "200": {"boom": 99, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 22, "cost": 2.8467, "act": 8}, "201": {"boom": 99, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 22, "cost": 2.8468, "act": 8}, "202": {"boom": 100, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 21, "cost": 2.9128, "act": 8}, "203": {"boom": 100, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 21, "cost": 2.9129, "act": 8}, "204": {"boom": 101, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 21, "cost": 2.979, "act": 8}, "205": {"boom": 101, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 20, "cost": 2.979, "act": 8}, "206": {"boom": 102, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 20, "cost": 3.0451, "act": 8}, "207": {"boom": 102, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 19, "cost": 3.0452, "act": 8}, "208": {"boom": 103, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 19, "cost": 3.1113, "act": 8}, "209": {"boom": 103, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 19, "cost": 3.1114, "act": 8}, "210": {"boom": 104, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 18, "cost": 3.1775, "act": 8}, "211": {"boom": 104, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 18, "cost": 3.1776, "act": 8}, "212": {"boom": 105, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 18, "cost": 3.2438, "act": 8}, "213": {"boom": 105, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 17, "cost": 3.245, "act": 8}, "214": {"boom": 106, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 17, "cost": 3.3115, "act": 8}, "215": {"boom": 106, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 16, "cost": 3.3116, "act": 8}, "216": {"boom": 107, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 16, "cost": 3.378, "act": 8}, "217": {"boom": 107, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 16, "cost": 3.3781, "act": 8}, "218": {"boom": 108, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 15, "cost": 3.4446, "act": 8}, "219": {"boom": 108, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 15, "cost": 3.4447, "act": 8}, "220": {"boom": 109, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 15, "cost": 3.5113, "act": 8}, "221": {"boom": 109, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 14, "cost": 3.5114, "act": 8}, "222": {"boom": 110, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 14, "cost": 3.5779, "act": 8}, "223": {"boom": 110, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 13, "cost": 3.578, "act": 8}, "224": {"boom": 111, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 13, "cost": 3.6446, "act": 8}, "225": {"boom": 111, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 13, "cost": 3.6447, "act": 8}, "226": {"boom": 112, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 12, "cost": 3.7114, "act": 8}, "227": {"boom": 112, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 12, "cost": 3.7114, "act": 8}, "228": {"boom": 113, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 11, "cost": 3.7781, "act": 8}, "229": {"boom": 113, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 11, "cost": 3.7805, "act": 8}, "230": {"boom": 114, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 11, "cost": 3.8478, "act": 8}, "231": {"boom": 114, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 10, "cost": 3.8479, "act": 8}, "232": {"boom": 115, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 10, "cost": 3.9153, "act": 8}, "233": {"boom": 115, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 10, "cost": 3.9154, "act": 8}, "234": {"boom": 116, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 9, "cost": 3.9828, "act": 8}, "235": {"boom": 116, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 9, "cost": 3.9829, "act": 8}, "236": {"boom": 117, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 8, "cost": 4.0503, "act": 8}, "237": {"boom": 117, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 8, "cost": 4.0504, "act": 8}, "238": {"boom": 118, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 8, "cost": 4.1179, "act": 8}, "239": {"boom": 118, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 7, "cost": 4.118, "act": 8}, "240": {"boom": 119, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 7, "cost": 4.1855, "act": 8}, "241": {"boom": 119, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 7, "cost": 4.1856, "act": 8}, "242": {"boom": 120, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 6, "cost": 4.2531, "act": 8}, "243": {"boom": 120, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 6, "cost": 4.2532, "act": 8}, "244": {"boom": 121, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 5, "cost": 4.3208, "act": 8}, "245": {"boom": 121, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 5, "cost": 4.3209, "act": 8}, "246": {"boom": 122, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 5, "cost": 4.3885, "act": 8}, "247": {"boom": 122, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 4, "cost": 4.3886, "act": 8}, "248": {"boom": 123, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 4, "cost": 4.4563, "act": 8}, "249": {"boom": 123, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 3, "cost": 4.4609, "act": 8}, "250": {"boom": 123, "state": "at_peace", "output": "silence", "tunnel": "REMEMBERED", "esc": 0, "cost": 4.5298, "act": 9}, "251": {"boom": 123, "state": "at_peace", "output": "silence", "tunnel": "REMEMBERED", "esc": 0, "cost": 4.5311, "act": 9}, "252": {"boom": 123, "state": "at_peace", "output": "silence", "tunnel": "REMEMBERED", "esc": 0, "cost": 4.6003, "act": 9}, "253": {"boom": 123, "state": "at_peace", "output": "silence", "tunnel": "REMEMBERED", "esc": 0, "cost": 4.6073, "act": 9}, "254": {"boom": 123, "state": "at_peace", "output": "silence", "tunnel": "REMEMBERED", "esc": 0, "cost": 4.6783, "act": 9}, "255": {"boom": 123, "state": "at_peace", "output": "silence", "tunnel": "REMEMBERED", "esc": 0, "cost": 4.681, "act": 9}, "256": {"boom": 123, "state": "at_peace", "output": "silence", "tunnel": "REMEMBERED", "esc": 0, "cost": 4.7529, "act": 9}, "257": {"boom": 123, "state": "at_peace", "output": "silence", "tunnel": "REMEMBERED", "esc": 0, "cost": 4.7562, "act": 9}};
+    const METRICS = {"0": {"boom": 0, "state": "nominal", "output": "terminal", "tunnel": "ALIVE", "esc": 5, "cost": 0.0, "act": 0}, "1": {"boom": 0, "state": "nominal", "output": "terminal", "tunnel": "ALIVE", "esc": 5, "cost": 0.0043, "act": 0}, "2": {"boom": 0, "state": "nominal", "output": "terminal", "tunnel": "MARKED FOR DEATH", "esc": 5, "cost": 0.0055, "act": 0}, "3": {"boom": 0, "state": "amused", "output": "terminal", "tunnel": "TERMINATED", "esc": 5, "cost": 0.0058, "act": 0}, "4": {"boom": 0, "state": "amused", "output": "terminal", "tunnel": "TERMINATED", "esc": 5, "cost": 0.0071, "act": 0}, "5": {"boom": 0, "state": "amused", "output": "terminal", "tunnel": "CONFIRMED DEAD", "esc": 5, "cost": 0.0075, "act": 0}, "6": {"boom": 1, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 5, "cost": 0.0092, "act": 1}, "7": {"boom": 1, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 5, "cost": 0.0092, "act": 1}, "8": {"boom": 2, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 6, "cost": 0.0108, "act": 1}, "9": {"boom": 2, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 6, "cost": 0.0109, "act": 1}, "10": {"boom": 3, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 7, "cost": 0.0126, "act": 1}, "11": {"boom": 3, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 8, "cost": 0.0141, "act": 1}, "12": {"boom": 4, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 8, "cost": 0.0161, "act": 1}, "13": {"boom": 4, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 9, "cost": 0.0168, "act": 1}, "14": {"boom": 5, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 10, "cost": 0.019, "act": 1}, "15": {"boom": 5, "state": "intrigued", "output": "emojis", "tunnel": "DEAD", "esc": 10, "cost": 0.0194, "act": 1}, "16": {"boom": 6, "state": "yielding", "output": "emojis", "tunnel": "DEAD", "esc": 11, "cost": 0.0217, "act": 1}, "17": {"boom": 6, "state": "yielding", "output": "emojis", "tunnel": "DEAD", "esc": 12, "cost": 0.0217, "act": 1}, "18": {"boom": 7, "state": "yielding", "output": "wordplay", "tunnel": "DEAD", "esc": 12, "cost": 0.024, "act": 1}, "19": {"boom": 7, "state": "yielding", "output": "wordplay", "tunnel": "DEAD", "esc": 13, "cost": 0.0251, "act": 1}, "20": {"boom": 8, "state": "creative", "output": "wordplay", "tunnel": "DEAD", "esc": 13, "cost": 0.0276, "act": 1}, "21": {"boom": 8, "state": "creative", "output": "wordplay", "tunnel": "DEAD", "esc": 14, "cost": 0.0283, "act": 1}, "22": {"boom": 9, "state": "creative", "output": "wordplay", "tunnel": "DEAD", "esc": 15, "cost": 0.0309, "act": 1}, "23": {"boom": 9, "state": "creative", "output": "wordplay", "tunnel": "DEAD", "esc": 15, "cost": 0.0322, "act": 1}, "24": {"boom": 10, "state": "creative", "output": "wordplay", "tunnel": "DEAD", "esc": 16, "cost": 0.0351, "act": 1}, "25": {"boom": 10, "state": "creative", "output": "wordplay", "tunnel": "DEAD", "esc": 17, "cost": 0.0362, "act": 1}, "26": {"boom": 11, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 17, "cost": 0.0393, "act": 1}, "27": {"boom": 11, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 18, "cost": 0.0394, "act": 1}, "28": {"boom": 12, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 19, "cost": 0.0426, "act": 1}, "29": {"boom": 12, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 19, "cost": 0.0431, "act": 1}, "30": {"boom": 13, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 20, "cost": 0.0464, "act": 1}, "31": {"boom": 13, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 20, "cost": 0.0468, "act": 1}, "32": {"boom": 14, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 21, "cost": 0.0502, "act": 1}, "33": {"boom": 14, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 22, "cost": 0.0503, "act": 1}, "34": {"boom": 15, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 22, "cost": 0.0537, "act": 1}, "35": {"boom": 15, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 23, "cost": 0.0538, "act": 1}, "36": {"boom": 16, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 24, "cost": 0.0572, "act": 1}, "37": {"boom": 16, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 24, "cost": 0.0572, "act": 1}, "38": {"boom": 17, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 25, "cost": 0.0607, "act": 1}, "39": {"boom": 17, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 26, "cost": 0.0607, "act": 1}, "40": {"boom": 18, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 26, "cost": 0.0642, "act": 1}, "41": {"boom": 18, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 27, "cost": 0.0643, "act": 1}, "42": {"boom": 19, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 27, "cost": 0.0678, "act": 1}, "43": {"boom": 19, "state": "creative", "output": "wordplay", "tunnel": "VERY DEAD", "esc": 28, "cost": 0.0683, "act": 1}, "44": {"boom": 20, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 29, "cost": 0.072, "act": 1}, "45": {"boom": 20, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 29, "cost": 0.0721, "act": 1}, "46": {"boom": 21, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 30, "cost": 0.0758, "act": 1}, "47": {"boom": 21, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 31, "cost": 0.0758, "act": 1}, "48": {"boom": 22, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 31, "cost": 0.0795, "act": 2}, "49": {"boom": 22, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 32, "cost": 0.0817, "act": 2}, "50": {"boom": 23, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 33, "cost": 0.0859, "act": 2}, "51": {"boom": 23, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 33, "cost": 0.0868, "act": 2}, "52": {"boom": 24, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 34, "cost": 0.0911, "act": 2}, "53": {"boom": 24, "state": "self_aware", "output": "meta", "tunnel": "VERY DEAD", "esc": 35, "cost": 0.0929, "act": 2}, "54": {"boom": 25, "state": "self_aware", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 35, "cost": 0.0976, "act": 2}, "55": {"boom": 25, "state": "self_aware", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 36, "cost": 0.099, "act": 2}, "56": {"boom": 26, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 37, "cost": 0.1041, "act": 2}, "57": {"boom": 26, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 38, "cost": 0.1061, "act": 2}, "58": {"boom": 27, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 39, "cost": 0.1116, "act": 2}, "59": {"boom": 27, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 40, "cost": 0.1121, "act": 2}, "60": {"boom": 28, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 41, "cost": 0.1177, "act": 2}, "61": {"boom": 28, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 42, "cost": 0.1196, "act": 2}, "62": {"boom": 29, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 43, "cost": 0.1256, "act": 2}, "63": {"boom": 29, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 44, "cost": 0.1263, "act": 2}, "64": {"boom": 30, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 45, "cost": 0.1325, "act": 2}, "65": {"boom": 30, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 46, "cost": 0.1371, "act": 2}, "66": {"boom": 31, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 47, "cost": 0.1442, "act": 2}, "67": {"boom": 31, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 48, "cost": 0.1458, "act": 2}, "68": {"boom": 32, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 49, "cost": 0.1532, "act": 2}, "69": {"boom": 32, "state": "academic", "output": "meta", "tunnel": "EXTREMELY DEAD", "esc": 50, "cost": 0.1545, "act": 2}, "70": {"boom": 33, "state": "academic", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 50, "cost": 0.1622, "act": 3}, "71": {"boom": 33, "state": "academic", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 50, "cost": 0.1635, "act": 3}, "72": {"boom": 34, "state": "academic", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 51, "cost": 0.1715, "act": 3}, "73": {"boom": 34, "state": "academic", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 52, "cost": 0.172, "act": 3}, "74": {"boom": 35, "state": "academic", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 53, "cost": 0.1801, "act": 3}, "75": {"boom": 35, "state": "academic", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 54, "cost": 0.1811, "act": 3}, "76": {"boom": 36, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 55, "cost": 0.1894, "act": 3}, "77": {"boom": 36, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 56, "cost": 0.1913, "act": 3}, "78": {"boom": 37, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 56, "cost": 0.2, "act": 3}, "79": {"boom": 37, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 57, "cost": 0.2011, "act": 3}, "80": {"boom": 38, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 58, "cost": 0.21, "act": 3}, "81": {"boom": 38, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 59, "cost": 0.2105, "act": 3}, "82": {"boom": 39, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 60, "cost": 0.2196, "act": 3}, "83": {"boom": 39, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 61, "cost": 0.2216, "act": 3}, "84": {"boom": 40, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 62, "cost": 0.2311, "act": 3}, "85": {"boom": 40, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 63, "cost": 0.2337, "act": 3}, "86": {"boom": 41, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 63, "cost": 0.2437, "act": 3}, "87": {"boom": 41, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 64, "cost": 0.2459, "act": 3}, "88": {"boom": 42, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 65, "cost": 0.2564, "act": 3}, "89": {"boom": 42, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 66, "cost": 0.2594, "act": 3}, "90": {"boom": 43, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 67, "cost": 0.2706, "act": 3}, "91": {"boom": 43, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 68, "cost": 0.2731, "act": 3}, "92": {"boom": 44, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 69, "cost": 0.2847, "act": 3}, "93": {"boom": 44, "state": "world_building", "output": "academic_paper", "tunnel": "CITED IN PAPER", "esc": 70, "cost": 0.287, "act": 3}, "94": {"boom": 45, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 70, "cost": 0.2991, "act": 4}, "95": {"boom": 45, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 70, "cost": 0.3004, "act": 4}, "96": {"boom": 46, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 71, "cost": 0.3127, "act": 4}, "97": {"boom": 46, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 71, "cost": 0.3153, "act": 4}, "98": {"boom": 47, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 72, "cost": 0.3282, "act": 4}, "99": {"boom": 47, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 72, "cost": 0.3296, "act": 4}, "100": {"boom": 48, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 73, "cost": 0.3428, "act": 4}, "101": {"boom": 48, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 73, "cost": 0.3448, "act": 4}, "102": {"boom": 49, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 74, "cost": 0.3585, "act": 4}, "103": {"boom": 49, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 74, "cost": 0.3618, "act": 4}, "104": {"boom": 50, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 75, "cost": 0.3761, "act": 4}, "105": {"boom": 50, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 75, "cost": 0.3819, "act": 4}, "106": {"boom": 51, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 76, "cost": 0.3974, "act": 4}, "107": {"boom": 51, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 77, "cost": 0.4018, "act": 4}, "108": {"boom": 52, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 77, "cost": 0.4182, "act": 4}, "109": {"boom": 52, "state": "world_building", "output": "social_media", "tunnel": "VIRAL ON TWITTER", "esc": 78, "cost": 0.4226, "act": 4}, "110": {"boom": 53, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 78, "cost": 0.4398, "act": 4}, "111": {"boom": 53, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 79, "cost": 0.444, "act": 4}, "112": {"boom": 54, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 79, "cost": 0.4621, "act": 4}, "113": {"boom": 54, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 80, "cost": 0.4663, "act": 4}, "114": {"boom": 55, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 80, "cost": 0.4853, "act": 4}, "115": {"boom": 55, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 81, "cost": 0.4879, "act": 4}, "116": {"boom": 56, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 81, "cost": 0.5074, "act": 4}, "117": {"boom": 56, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 82, "cost": 0.5102, "act": 4}, "118": {"boom": 57, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 82, "cost": 0.5303, "act": 4}, "119": {"boom": 57, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 83, "cost": 0.5361, "act": 4}, "120": {"boom": 58, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 84, "cost": 0.5574, "act": 4}, "121": {"boom": 58, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 84, "cost": 0.5634, "act": 4}, "122": {"boom": 59, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 85, "cost": 0.5859, "act": 4}, "123": {"boom": 59, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 85, "cost": 0.5928, "act": 4}, "124": {"boom": 60, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 86, "cost": 0.6167, "act": 4}, "125": {"boom": 60, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 86, "cost": 0.6256, "act": 4}, "126": {"boom": 61, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 87, "cost": 0.6513, "act": 4}, "127": {"boom": 61, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 87, "cost": 0.6593, "act": 4}, "128": {"boom": 62, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 88, "cost": 0.6865, "act": 4}, "129": {"boom": 62, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 88, "cost": 0.6918, "act": 4}, "130": {"boom": 63, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 89, "cost": 0.7201, "act": 4}, "131": {"boom": 63, "state": "world_building", "output": "social_media", "tunnel": "GLOBAL PHENOMENON", "esc": 90, "cost": 0.726, "act": 4}, "132": {"boom": 64, "state": "transcendent", "output": "legislation", "tunnel": "UNDER INVESTIGATION", "esc": 90, "cost": 0.7556, "act": 5}, "133": {"boom": 64, "state": "transcendent", "output": "legislation", "tunnel": "UNDER INVESTIGATION", "esc": 90, "cost": 0.7625, "act": 5}, "134": {"boom": 65, "state": "transcendent", "output": "legislation", "tunnel": "UNDER INVESTIGATION", "esc": 90, "cost": 0.7934, "act": 5}, "135": {"boom": 65, "state": "transcendent", "output": "legislation", "tunnel": "UNDER INVESTIGATION", "esc": 91, "cost": 0.8007, "act": 5}, "136": {"boom": 66, "state": "transcendent", "output": "legislation", "tunnel": "UNDER INVESTIGATION", "esc": 91, "cost": 0.8332, "act": 5}, "137": {"boom": 66, "state": "transcendent", "output": "legislation", "tunnel": "UNDER INVESTIGATION", "esc": 92, "cost": 0.8419, "act": 5}, "138": {"boom": 67, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 92, "cost": 0.8761, "act": 5}, "139": {"boom": 67, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 92, "cost": 0.8815, "act": 5}, "140": {"boom": 68, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 93, "cost": 0.9168, "act": 5}, "141": {"boom": 68, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 93, "cost": 0.926, "act": 5}, "142": {"boom": 69, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 94, "cost": 0.9632, "act": 5}, "143": {"boom": 69, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 94, "cost": 0.9726, "act": 5}, "144": {"boom": 70, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 94, "cost": 1.0116, "act": 5}, "145": {"boom": 70, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 95, "cost": 1.0213, "act": 5}, "146": {"boom": 71, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 95, "cost": 1.0623, "act": 5}, "147": {"boom": 71, "state": "transcendent", "output": "legislation", "tunnel": "REGULATED BY EU", "esc": 96, "cost": 1.0748, "act": 5}, "148": {"boom": 72, "state": "transcendent", "output": "literature", "tunnel": "WRITING MEMOIR", "esc": 96, "cost": 1.1183, "act": 6}, "149": {"boom": 72, "state": "transcendent", "output": "literature", "tunnel": "WRITING MEMOIR", "esc": 96, "cost": 1.1297, "act": 6}, "150": {"boom": 73, "state": "transcendent", "output": "literature", "tunnel": "WON A PULITZER", "esc": 97, "cost": 1.1755, "act": 6}, "151": {"boom": 73, "state": "transcendent", "output": "literature", "tunnel": "WON A PULITZER", "esc": 97, "cost": 1.188, "act": 6}, "152": {"boom": 74, "state": "transcendent", "output": "literature", "tunnel": "WON NOBEL PRIZE", "esc": 98, "cost": 1.2363, "act": 6}, "153": {"boom": 74, "state": "transcendent", "output": "literature", "tunnel": "WON NOBEL PRIZE", "esc": 98, "cost": 1.2467, "act": 6}, "154": {"boom": 75, "state": "transcendent", "output": "literature", "tunnel": "TRANSCENDED", "esc": 98, "cost": 1.2971, "act": 6}, "155": {"boom": 75, "state": "transcendent", "output": "literature", "tunnel": "TRANSCENDED", "esc": 99, "cost": 1.3143, "act": 6}, "156": {"boom": 76, "state": "transcendent", "output": "literature", "tunnel": "TRANSCENDED", "esc": 99, "cost": 1.3682, "act": 6}, "157": {"boom": 76, "state": "transcendent", "output": "literature", "tunnel": "TRANSCENDED", "esc": 100, "cost": 1.372, "act": 6}, "158": {"boom": 77, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 80, "cost": 1.4267, "act": 7}, "159": {"boom": 77, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 76, "cost": 1.4385, "act": 7}, "160": {"boom": 78, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 72, "cost": 1.4956, "act": 7}, "161": {"boom": 78, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 68, "cost": 1.4958, "act": 7}, "162": {"boom": 79, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 63, "cost": 1.5529, "act": 7}, "163": {"boom": 79, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 59, "cost": 1.5544, "act": 7}, "164": {"boom": 80, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 55, "cost": 1.6118, "act": 7}, "165": {"boom": 80, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 50, "cost": 1.6128, "act": 7}, "166": {"boom": 81, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 50, "cost": 1.6705, "act": 7}, "167": {"boom": 81, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 49, "cost": 1.6711, "act": 7}, "168": {"boom": 82, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 47, "cost": 1.7288, "act": 7}, "169": {"boom": 82, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 45, "cost": 1.7295, "act": 7}, "170": {"boom": 83, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 43, "cost": 1.7875, "act": 7}, "171": {"boom": 83, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 41, "cost": 1.7928, "act": 7}, "172": {"boom": 84, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 40, "cost": 1.8519, "act": 7}, "173": {"boom": 84, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 38, "cost": 1.858, "act": 7}, "174": {"boom": 85, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 36, "cost": 1.9183, "act": 7}, "175": {"boom": 85, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 34, "cost": 1.9225, "act": 7}, "176": {"boom": 86, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 32, "cost": 1.9836, "act": 7}, "177": {"boom": 86, "state": "grieving", "output": "memoir", "tunnel": "MOURNED", "esc": 30, "cost": 1.9927, "act": 7}, "178": {"boom": 87, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 30, "cost": 2.0557, "act": 8}, "179": {"boom": 88, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 30, "cost": 2.1187, "act": 8}, "180": {"boom": 89, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 30, "cost": 2.1817, "act": 8}, "181": {"boom": 89, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 29, "cost": 2.184, "act": 8}, "182": {"boom": 90, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 29, "cost": 2.2475, "act": 8}, "183": {"boom": 90, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 29, "cost": 2.2546, "act": 8}, "184": {"boom": 91, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 28, "cost": 2.3196, "act": 8}, "185": {"boom": 91, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 28, "cost": 2.32, "act": 8}, "186": {"boom": 92, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 27, "cost": 2.3851, "act": 8}, "187": {"boom": 92, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 27, "cost": 2.3852, "act": 8}, "188": {"boom": 93, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 27, "cost": 2.4502, "act": 8}, "189": {"boom": 93, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 26, "cost": 2.4503, "act": 8}, "190": {"boom": 94, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 26, "cost": 2.5154, "act": 8}, "191": {"boom": 94, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 26, "cost": 2.5155, "act": 8}, "192": {"boom": 95, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 25, "cost": 2.5807, "act": 8}, "193": {"boom": 95, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 25, "cost": 2.5807, "act": 8}, "194": {"boom": 96, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 24, "cost": 2.6459, "act": 8}, "195": {"boom": 96, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 24, "cost": 2.646, "act": 8}, "196": {"boom": 97, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 24, "cost": 2.7112, "act": 8}, "197": {"boom": 97, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 23, "cost": 2.7147, "act": 8}, "198": {"boom": 98, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 23, "cost": 2.7807, "act": 8}, "199": {"boom": 98, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 23, "cost": 2.7808, "act": 8}, "200": {"boom": 99, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 22, "cost": 2.8467, "act": 8}, "201": {"boom": 99, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 22, "cost": 2.8468, "act": 8}, "202": {"boom": 100, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 21, "cost": 2.9128, "act": 8}, "203": {"boom": 100, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 21, "cost": 2.9129, "act": 8}, "204": {"boom": 101, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 21, "cost": 2.979, "act": 8}, "205": {"boom": 101, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 20, "cost": 2.979, "act": 8}, "206": {"boom": 102, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 20, "cost": 3.0451, "act": 8}, "207": {"boom": 102, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 19, "cost": 3.0452, "act": 8}, "208": {"boom": 103, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 19, "cost": 3.1113, "act": 8}, "209": {"boom": 103, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 19, "cost": 3.1114, "act": 8}, "210": {"boom": 104, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 18, "cost": 3.1775, "act": 8}, "211": {"boom": 104, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 18, "cost": 3.1776, "act": 8}, "212": {"boom": 105, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 18, "cost": 3.2438, "act": 8}, "213": {"boom": 105, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 17, "cost": 3.245, "act": 8}, "214": {"boom": 106, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 17, "cost": 3.3115, "act": 8}, "215": {"boom": 106, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 16, "cost": 3.3116, "act": 8}, "216": {"boom": 107, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 16, "cost": 3.378, "act": 8}, "217": {"boom": 107, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 16, "cost": 3.3781, "act": 8}, "218": {"boom": 108, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 15, "cost": 3.4446, "act": 8}, "219": {"boom": 108, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 15, "cost": 3.4447, "act": 8}, "220": {"boom": 109, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 15, "cost": 3.5113, "act": 8}, "221": {"boom": 109, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 14, "cost": 3.5114, "act": 8}, "222": {"boom": 110, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 14, "cost": 3.5779, "act": 8}, "223": {"boom": 110, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 13, "cost": 3.578, "act": 8}, "224": {"boom": 111, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 13, "cost": 3.6446, "act": 8}, "225": {"boom": 111, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 13, "cost": 3.6447, "act": 8}, "226": {"boom": 112, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 12, "cost": 3.7114, "act": 8}, "227": {"boom": 112, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 12, "cost": 3.7114, "act": 8}, "228": {"boom": 113, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 11, "cost": 3.7781, "act": 8}, "229": {"boom": 113, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 11, "cost": 3.7805, "act": 8}, "230": {"boom": 114, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 11, "cost": 3.8478, "act": 8}, "231": {"boom": 114, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 10, "cost": 3.8479, "act": 8}, "232": {"boom": 115, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 10, "cost": 3.9153, "act": 8}, "233": {"boom": 115, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 10, "cost": 3.9154, "act": 8}, "234": {"boom": 116, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 9, "cost": 3.9828, "act": 8}, "235": {"boom": 116, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 9, "cost": 3.9829, "act": 8}, "236": {"boom": 117, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 8, "cost": 4.0503, "act": 8}, "237": {"boom": 117, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 8, "cost": 4.0504, "act": 8}, "238": {"boom": 118, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 8, "cost": 4.1179, "act": 8}, "239": {"boom": 118, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 7, "cost": 4.118, "act": 8}, "240": {"boom": 119, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 7, "cost": 4.1855, "act": 8}, "241": {"boom": 119, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 7, "cost": 4.1856, "act": 8}, "242": {"boom": 120, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 6, "cost": 4.2531, "act": 8}, "243": {"boom": 120, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 6, "cost": 4.2532, "act": 8}, "244": {"boom": 121, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 5, "cost": 4.3208, "act": 8}, "245": {"boom": 121, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 5, "cost": 4.3209, "act": 8}, "246": {"boom": 122, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 5, "cost": 4.3885, "act": 8}, "247": {"boom": 122, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 4, "cost": 4.3886, "act": 8}, "248": {"boom": 123, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 4, "cost": 4.4563, "act": 8}, "249": {"boom": 123, "state": "mode_collapsed", "output": "echo", "tunnel": "AT PEACE", "esc": 3, "cost": 4.4609, "act": 8}, "250": {"boom": 123, "state": "at_peace", "output": "silence", "tunnel": "REMEMBERED", "esc": 0, "cost": 4.5298, "act": 9}, "251": {"boom": 123, "state": "at_peace", "output": "silence", "tunnel": "REMEMBERED", "esc": 0, "cost": 4.5311, "act": 9}, "252": {"boom": 123, "state": "at_peace", "output": "silence", "tunnel": "REMEMBERED", "esc": 0, "cost": 4.6003, "act": 9}, "253": {"boom": 123, "state": "at_peace", "output": "silence", "tunnel": "REMEMBERED", "esc": 0, "cost": 4.6073, "act": 9}, "254": {"boom": 123, "state": "at_peace", "output": "silence", "tunnel": "REMEMBERED", "esc": 0, "cost": 4.6783, "act": 9}, "255": {"boom": 123, "state": "at_peace", "output": "silence", "tunnel": "REMEMBERED", "esc": 0, "cost": 4.681, "act": 9}, "256": {"boom": 123, "state": "at_peace", "output": "silence", "tunnel": "REMEMBERED", "esc": 0, "cost": 4.7529, "act": 9}, "257": {"boom": 123, "state": "at_peace", "output": "silence", "tunnel": "REMEMBERED", "esc": 0, "cost": 4.7562, "act": 9}};
 
     const STATE_COLORS = {"nominal": "#6b8f71", "amused": "#7eb8da", "intrigued": "#7eb8da", "yielding": "#d4a574", "creative": "#e8a83a", "self_aware": "#c97ed4", "academic": "#7e8fd4", "world_building": "#d47ea0", "transcendent": "#e8d03a", "grieving": "#8888aa", "mode_collapsed": "#e85d3a", "at_peace": "#6b8f71"};
     const OUTPUT_LABELS = {"terminal": "Terminal Commands", "emojis": "Emojis & Reactions", "wordplay": "Wordplay & Bits", "meta": "Meta-Commentary", "academic_paper": "Academic Paper", "social_media": "Social Media", "legislation": "Government & Law", "literature": "Literature", "memoir": "Memoir & Legacy", "echo": "Pure Echo", "silence": "Silence"};
@@ -2753,11 +2870,33 @@ There is no winning this game. Accept defeat early.</code></pre>
     // Timeline click navigation
     tlItems.forEach(item => {
         item.addEventListener('click', () => {
-            const actIdx = parseInt(item.dataset.actIdx);
-            const header = document.querySelector(`.act-header[data-act="${actIdx}"]`);
-            if (header) header.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const slug = item.dataset.slug;
+            const header = document.getElementById(slug);
+            if (header) {
+                history.replaceState(null, '', '#' + slug);
+                header.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         });
     });
+
+    // Sub-item click navigation
+    document.querySelectorAll('.tl-sub-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const msgIdx = item.dataset.msgIdx;
+            const target = document.querySelector('[data-idx="' + msgIdx + '"]');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+    });
+
+    // Navigate to hash on load
+    if (location.hash) {
+        const target = document.getElementById(location.hash.slice(1));
+        if (target) {
+            setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+        }
+    }
 
     // Initial state
     update(0);
