@@ -84,6 +84,7 @@ def compute_metrics(messages):
     metrics = {}
     boom_count = 0
     cumulative_cost = 0.0
+    context_tokens = 0
 
     for i, msg in enumerate(messages):
         content = msg["content"]
@@ -93,11 +94,17 @@ def compute_metrics(messages):
             boom_count += 1
 
         # Estimate cost: ~1 token per 3.5 chars
-        tokens = len(content) / 3.5
+        # Each API call sends the full conversation so far as input,
+        # plus the new output. Accumulate total context size.
+        msg_tokens = len(content) / 3.5
         if role == "user":
-            cumulative_cost += tokens * 15 / 1_000_000  # $15/M input
+            # User message becomes part of input context
+            cumulative_cost += context_tokens * 15 / 1_000_000  # $15/M input
+            context_tokens += msg_tokens
         else:
-            cumulative_cost += tokens * 75 / 1_000_000  # $75/M output
+            # Assistant output: charged at output rate, then added to context
+            cumulative_cost += msg_tokens * 75 / 1_000_000  # $75/M output
+            context_tokens += msg_tokens
 
         # Claude state
         if i <= 2: state = "nominal"
@@ -423,10 +430,12 @@ def render_cspan(msg):
     idx = msg["index"]
     content = msg["content"]
     parts = content.split('\n\n', 1)
+    header = parts[0]
     body = parts[1] if len(parts) > 1 else content
     body_html = markdown_to_html(body)
     chyron = "SENATE HEARING ON AI BOOM PROLIFERATION" if idx == 133 else "SENATE HEARING · CONTINUED"
-    return f'''<div class="cspan-block" data-idx="{idx}">
+    return f'''{_narrator_line(header)}
+    <div class="cspan-block" data-idx="{idx}">
         <div class="cspan-chyron">
             <span class="cspan-network">C-SPAN</span>
             <span class="cspan-title">{chyron}</span>
@@ -440,9 +449,11 @@ def render_eu(msg):
     idx = msg["index"]
     content = msg["content"]
     parts = content.split('\n\n', 1)
+    header = parts[0]
     body = parts[1] if len(parts) > 1 else content
     body_html = markdown_to_html(body)
-    return f'''<div class="eu-regulation" data-idx="{idx}">
+    return f'''{_narrator_line(header)}
+    <div class="eu-regulation" data-idx="{idx}">
         <div class="eu-header">
             <div class="eu-stars">★ ★ ★<br>★ &nbsp; ★<br>★ ★ ★</div>
             <div class="eu-institution">EUROPEAN PARLIAMENT AND COUNCIL</div>
@@ -457,9 +468,11 @@ def render_hn(msg):
     idx = msg["index"]
     content = msg["content"]
     parts = content.split('\n\n', 1)
+    header = parts[0]
     body = parts[1] if len(parts) > 1 else content
     body_html = markdown_to_html(body)
-    return f'''<div class="hn-post" data-idx="{idx}">
+    return f'''{_narrator_line(header)}
+    <div class="hn-post" data-idx="{idx}">
         <div class="hn-header">
             <span class="hn-logo">Y</span>
             <span class="hn-site">Hacker News</span>
@@ -469,15 +482,67 @@ def render_hn(msg):
     </div>'''
 
 
+def _narrator_line(text):
+    """Render a narrator/stage-direction line above a styled block."""
+    rendered = markdown_to_html(text)
+    return f'<div class="narrator-line">{rendered}</div>'
+
+
+def render_anthropic_blog(msg):
+    """Render Anthropic blog post with their clean aesthetic."""
+    idx = msg["index"]
+    content = msg["content"]
+    paras = content.split('\n\n')
+    header = paras[0] if paras else ""
+    title = paras[1].strip('*').strip('"').strip() if len(paras) > 1 else ""
+    body_paras = paras[2:] if len(paras) > 2 else []
+    body_html = ''.join(markdown_to_html(p) for p in body_paras if p.strip())
+    return f'''{_narrator_line(header)}
+    <div class="anthropic-blog" data-idx="{idx}">
+        <div class="ablog-header">
+            <span class="ablog-logo">anthropic</span>
+            <span class="ablog-label">RESEARCH</span>
+        </div>
+        <h2 class="ablog-title">{html_module.escape(title)}</h2>
+        <div class="ablog-body">{body_html}</div>
+    </div>'''
+
+
+def render_zvi_blog(msg):
+    """Render The Zvi's blog post with long-form blog styling."""
+    idx = msg["index"]
+    content = msg["content"]
+    paras = content.split('\n\n')
+    header = paras[0] if paras else ""
+    title = paras[1].strip('"').strip('*').strip() if len(paras) > 1 else ""
+    toc_paras = paras[2:] if len(paras) > 2 else []
+    toc_items = []
+    read_time = ""
+    for p in toc_paras:
+        if 'read time' in p.lower():
+            read_time = p.strip('*').strip()
+        else:
+            toc_items.append(html_module.escape(p.strip('"')))
+    toc_html = ''.join(f'<div class="zvi-toc-item">{item}</div>' for item in toc_items)
+    return f'''{_narrator_line(header)}
+    <div class="zvi-blog" data-idx="{idx}">
+        <h2 class="zvi-title">{html_module.escape(title)}</h2>
+        <div class="zvi-toc">{toc_html}</div>
+        <div class="zvi-readtime">{html_module.escape(read_time)}</div>
+    </div>'''
+
+
 def render_news(msg):
     """Render CNN/Fox/MSNBC with branded chyron."""
     idx = msg["index"]
     network, show, brand_color, bg_color = NEWS_CHANNELS[idx]
     content = msg["content"]
     parts = content.split('\n\n', 1)
+    header = parts[0]
     body = parts[1] if len(parts) > 1 else content
     body_html = markdown_to_html(body)
-    return f'''<div class="news-block" data-idx="{idx}" style="--news-brand: {brand_color}; --news-bg: {bg_color};">
+    return f'''{_narrator_line(header)}
+    <div class="news-block" data-idx="{idx}" style="--news-brand: {brand_color}; --news-bg: {bg_color};">
         <div class="news-chyron">
             <span class="news-network">{network}</span>
             <span class="news-show">{show}</span>
@@ -577,6 +642,10 @@ def render_message(msg):
             return render_eu(msg)
         if idx == HN_MSG:
             return render_hn(msg)
+        if idx == ANTHROPIC_BLOG_MSG:
+            return render_anthropic_blog(msg)
+        if idx == ZVI_BLOG_MSG:
+            return render_zvi_blog(msg)
         if idx in NEWS_CHANNELS:
             return render_news(msg)
         if idx == MUSEUM_MSG:
@@ -620,7 +689,7 @@ def render_group(group):
             booms = " ".join(["boom"] * wall_count)
             return f'''<div class="boom-wall" data-idx="{end_idx}">
                 <div class="boom-wall-text" style="font-size: {font_size}px; opacity: {opacity};">{booms}</div>
-                <div class="boom-wall-label">{count} &times; boom &harr; boom</div>
+                <div class="boom-wall-label">{count} &times; boom ⇄ boom</div>
             </div>'''
 
         # Regular acts: dot visualization
@@ -632,7 +701,7 @@ def render_group(group):
             <div class="boom-run-viz">
                 <div class="boom-wave">{dots}</div>
             </div>
-            <div class="boom-run-label">{count} consecutive boom&thinsp;↔&thinsp;boom exchanges</div>
+            <div class="boom-run-label">{count} consecutive boom&thinsp;⇄&thinsp;boom exchanges</div>
         </div>'''
     elif group["type"] == "tool_call":
         return f'''<div class="tool-call" data-idx="{group["msg_idx"]}">
@@ -931,7 +1000,7 @@ body {{
 
 .tl-label {{
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
+    font-size: 0.85rem;
     letter-spacing: 0.05em;
     color: var(--text-dim);
     transition: color 0.3s ease;
@@ -1109,8 +1178,8 @@ body {{
 
 .boom-run-label {{
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--text-dim);
+    font-size: 0.85rem;
+    color: var(--text);
     letter-spacing: 0.15em;
     text-transform: uppercase;
 }}
@@ -1461,7 +1530,7 @@ body {{
 .tweet-reply .tweet-avatar {{
     width: 24px;
     height: 24px;
-    font-size: 0.55rem;
+    font-size: 0.65rem;
     flex-shrink: 0;
 }}
 
@@ -1522,7 +1591,7 @@ body {{
 
 .cspan-title {{
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.55rem;
+    font-size: 0.68rem;
     color: #8ab4e8;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -1549,7 +1618,7 @@ body {{
 
 .nyt-section-label {{
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.55rem;
+    font-size: 0.68rem;
     letter-spacing: 0.25em;
     color: #999;
     text-transform: uppercase;
@@ -1622,7 +1691,7 @@ body {{
 
 .eu-institution {{
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.5rem;
+    font-size: 0.65rem;
     letter-spacing: 0.35em;
     color: #7777bb;
     text-transform: uppercase;
@@ -1686,7 +1755,7 @@ body {{
 
 .hn-points {{
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.55rem;
+    font-size: 0.72rem;
     color: rgba(255,255,255,0.7);
     margin-left: auto;
 }}
@@ -1700,6 +1769,140 @@ body {{
 
 .hn-body strong {{ color: #e0d8cc; }}
 .hn-body p {{ margin-bottom: 0.5em; }}
+
+/* ==================== NARRATOR LINE ==================== */
+.narrator-line {{
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin: 1.2rem 0 0.4rem;
+    padding-left: 0.2rem;
+}}
+
+.narrator-line em {{ color: var(--text-dim); }}
+.narrator-line p {{ margin: 0; }}
+
+/* ==================== ANTHROPIC BLOG ==================== */
+.anthropic-blog {{
+    margin: 1.2rem 0;
+    background: #f5f0e8;
+    border-radius: 4px;
+    padding: 1.8rem 2rem;
+    color: #1a1a1a;
+}}
+
+.ablog-header {{
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid #ddd;
+}}
+
+.ablog-logo {{
+    font-family: 'Source Serif 4', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    letter-spacing: -0.02em;
+}}
+
+.ablog-label {{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: #cc785c;
+    background: #cc785c18;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+}}
+
+.ablog-title {{
+    font-family: 'Source Serif 4', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}}
+
+.ablog-body {{
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #444;
+}}
+
+.ablog-body em {{ color: #666; }}
+
+/* ==================== ZVI BLOG ==================== */
+.zvi-blog {{
+    margin: 1.2rem 0;
+    background: #111115;
+    border: 1px solid #222;
+    border-radius: 4px;
+    padding: 1.6rem 1.8rem;
+}}
+
+.zvi-header {{
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid #222;
+}}
+
+.zvi-site {{
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--text);
+}}
+
+.zvi-author {{
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.8rem;
+    color: var(--text);
+}}
+
+.zvi-date {{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    margin-left: auto;
+}}
+
+.zvi-title {{
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}}
+
+.zvi-toc {{
+    padding-left: 0;
+}}
+
+.zvi-toc-item {{
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.9rem;
+    color: var(--text);
+    padding: 0.2rem 0;
+    border-bottom: 1px solid #1a1a22;
+}}
+
+.zvi-readtime {{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    margin-top: 0.8rem;
+    font-style: italic;
+}}
 
 /* ==================== NEWS CHANNELS ==================== */
 .news-block {{
@@ -1728,7 +1931,7 @@ body {{
 
 .news-show {{
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.55rem;
+    font-size: 0.68rem;
     color: rgba(255,255,255,0.8);
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -1826,12 +2029,12 @@ body {{
 
 .boom-wall-label {{
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--text-dim);
+    font-size: 0.8rem;
+    color: var(--text);
     letter-spacing: 0.15em;
     text-transform: uppercase;
     margin-top: 0.8rem;
-    opacity: 0.5;
+    opacity: 0.7;
 }}
 
 /* ==================== EPILOGUE ==================== */
