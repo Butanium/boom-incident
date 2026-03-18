@@ -2590,6 +2590,67 @@ There is no winning this game. Accept defeat early.</code></pre>
         return METRICS[best];
     }
 
+    // --- Mode collapse: the page loses its color ---
+    const COLORS_FULL = {
+        '--accent': '#e85d3a',
+        '--user-color': '#7eb8da',
+        '--ai-color': '#d4a574',
+        '--boom-color': '#e85d3a',
+        '--text-bright': '#eae7df',
+        '--text': '#c8c5be',
+        '--text-dim': '#6b6860',
+        '--border': '#1e1e24',
+        '--accent-glow': '#e85d3a33',
+        '--accent-dim': '#e85d3a88',
+    };
+    const COLORS_COLLAPSED = {
+        '--accent': '#4a4a4a',
+        '--user-color': '#5a5a5a',
+        '--ai-color': '#5a5a5a',
+        '--boom-color': '#4a4a4a',
+        '--text-bright': '#777777',
+        '--text': '#666666',
+        '--text-dim': '#4a4a4a',
+        '--border': '#1a1a1a',
+        '--accent-glow': '#4a4a4a22',
+        '--accent-dim': '#4a4a4a55',
+    };
+
+    function lerpHex(a, b, t) {
+        // Parse all hex pairs (RGB or RGBA)
+        const pairs = n => { const p = []; for (let i=1; i<n.length; i+=2) p.push(parseInt(n.slice(i,i+2),16)); return p; };
+        const pa = pairs(a), pb = pairs(b);
+        return '#' + pa.map((v, i) => Math.round(v + ((pb[i]||v) - v) * t).toString(16).padStart(2, '0')).join('');
+    }
+
+    function getDesaturation(idx) {
+        if (idx < 178) return 0;
+        if (idx <= 230) return Math.min(1, (idx - 178) / 52);
+        if (idx <= 249) return 1;
+        // "okay" breaks the spell — color returns
+        if (idx <= 252) return Math.max(0, 1 - (idx - 249) / 3);
+        return 0;
+    }
+
+    let prevDesat = -1;
+
+    function applyDesaturation(idx) {
+        const d = getDesaturation(idx);
+        // Avoid unnecessary DOM writes
+        if (Math.abs(d - prevDesat) < 0.005) return;
+        prevDesat = d;
+
+        const root = document.documentElement.style;
+        if (d === 0) {
+            // Reset to defaults
+            Object.keys(COLORS_FULL).forEach(k => root.removeProperty(k));
+            return;
+        }
+        Object.keys(COLORS_FULL).forEach(k => {
+            root.setProperty(k, lerpHex(COLORS_FULL[k], COLORS_COLLAPSED[k], d));
+        });
+    }
+
     function update(idx) {
         if (idx === currentIdx) return;
         currentIdx = idx;
@@ -2658,6 +2719,9 @@ There is no winning this game. Accept defeat early.</code></pre>
             if (i < m.act) item.classList.add('past');
             else if (i === m.act) item.classList.add('active');
         });
+
+        // Mode collapse: desaturate the page
+        applyDesaturation(idx);
     }
 
     // Scroll handler with rAF throttle
