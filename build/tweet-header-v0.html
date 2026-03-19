@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Boom Incident — Tweet Header</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@300;400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --bg: #0a0a0c;
+    --bg-message-user: #18181d;
+    --text: #c8c5be;
+    --text-dim: #8a8780;
+    --text-bright: #eae7df;
+    --accent: #e85d3a;
+    --accent-glow: #e85d3a33;
+    --boom-color: #e85d3a;
+    --user-color: #7eb8da;
+    --ai-color: #d4a574;
+    --border: #1e1e24;
+}
+
+body {
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Source Serif 4', Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+.frame {
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 700px 500px at 50% 50%, var(--accent-glow), transparent),
+        radial-gradient(ellipse 400px 300px at 25% 65%, #e85d3a0a, transparent),
+        radial-gradient(ellipse 400px 300px at 75% 35%, #e85d3a0a, transparent);
+    pointer-events: none;
+}
+
+/* Boom messages — compact, scattered */
+.boom-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+    z-index: 1;
+}
+
+.boom-col-left { align-items: flex-end; margin-right: 20px; }
+.boom-col-right { align-items: flex-start; margin-left: 20px; }
+
+.boom-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 14px;
+    border-left: 2px solid color-mix(in srgb, var(--boom-color) 40%, transparent);
+}
+
+.boom-line .boom-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    width: 4.5em;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.boom-line.user .boom-role { color: var(--user-color); }
+.boom-line.assistant .boom-role { color: var(--ai-color); }
+
+.boom-line .boom-word {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    color: var(--boom-color);
+    font-size: 1rem;
+}
+
+/* Fade booms at edges */
+.boom-line.fade-1 { opacity: 0.25; }
+.boom-line.fade-2 { opacity: 0.4; }
+.boom-line.fade-3 { opacity: 0.6; }
+.boom-line.fade-4 { opacity: 0.8; }
+
+/* Center column with the tweet */
+.center-col {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    max-width: 520px;
+    flex-shrink: 0;
+}
+
+/* Tweet card — scaled up from main page */
+.tweet-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1.3rem 1.5rem;
+    background: #15202b;
+    border: 1px solid #38444d;
+    border-radius: 16px;
+    width: 100%;
+}
+
+.tweet-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #1d9bf0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.tweet-avatar img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.tweet-body { min-width: 0; flex: 1; }
+
+.tweet-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    margin-bottom: 0.3rem;
+}
+
+.tweet-name {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 700;
+    color: #e7e9ea;
+    font-size: 1.05rem;
+}
+
+.tweet-handle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: #71767b;
+}
+
+.tweet-text {
+    color: #e7e9ea;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.tweet-text p { margin-bottom: 0; }
+
+/* Engagement bar */
+.tweet-engagement {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.7rem;
+    padding-top: 0.6rem;
+    max-width: 400px;
+}
+
+.eng-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #71767b;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+}
+
+.eng-item svg { opacity: 0.7; }
+.eng-count { font-size: 0.72rem; letter-spacing: -0.02em; }
+.eng-like .eng-count { color: #f91880; }
+.eng-like svg { color: #f91880; opacity: 0.8; }
+.eng-retweet .eng-count { color: #00ba7c; }
+.eng-retweet svg { color: #00ba7c; opacity: 0.8; }
+
+/* Community note */
+.tweet-community-note {
+    margin-top: 0.7rem;
+    padding: 0.7rem 0.8rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #3b4a53;
+    border-radius: 8px;
+}
+
+.tcn-header {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #8ecdf8;
+    margin-bottom: 0.3rem;
+}
+
+.tcn-text {
+    font-size: 1rem;
+    color: #e7e9ea;
+    line-height: 1.4;
+}
+
+/* Layout */
+.composition {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 20px;
+    position: relative;
+}
+
+/* Subtle title watermark */
+.watermark {
+    position: absolute;
+    bottom: 4px;
+    right: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    opacity: 0.35;
+    letter-spacing: 0.15em;
+    z-index: 3;
+}
+</style>
+</head>
+<body>
+
+<div class="frame">
+    <div class="composition">
+        <!-- Left boom column -->
+        <div class="boom-col boom-col-left">
+            <div class="boom-line user fade-1"><span class="boom-role">Human</span><span class="boom-word">boom</span></div>
+            <div class="boom-line assistant fade-1"><span class="boom-role">Claude</span><span class="boom-word">boom</span></div>
+            <div class="boom-line user fade-1"><span class="boom-role">Human</span><span class="boom-word">boom</span></div>
+            <div class="boom-line assistant fade-2"><span class="boom-role">Claude</span><span class="boom-word">boom</span></div>
+            <div class="boom-line user fade-2"><span class="boom-role">Human</span><span class="boom-word">boom</span></div>
+            <div class="boom-line assistant fade-3"><span class="boom-role">Claude</span><span class="boom-word">boom</span></div>
+            <div class="boom-line user fade-3"><span class="boom-role">Human</span><span class="boom-word">boom</span></div>
+            <div class="boom-line assistant fade-4"><span class="boom-role">Claude</span><span class="boom-word">boom</span></div>
+            <div class="boom-line user fade-4"><span class="boom-role">Human</span><span class="boom-word">boom</span></div>
+            <div class="boom-line assistant"><span class="boom-role">Claude</span><span class="boom-word">boom</span></div>
+            <div class="boom-line user"><span class="boom-role">Human</span><span class="boom-word">boom</span></div>
+        </div>
+
+        <!-- Center: the sama tweet -->
+        <div class="center-col">
+            <div class="tweet-card">
+                <div class="tweet-avatar"><img src="https://unavatar.io/x/sama" alt="" onerror="this.remove()">S</div>
+                <div class="tweet-body">
+                    <div class="tweet-header">
+                        <span class="tweet-name">Sam Altman</span>
+                        <span class="tweet-handle">@sama</span>
+                    </div>
+                    <div class="tweet-text"><p>"we're excited to announce that o3 can now boom in 47 languages. this is AGI."</p></div>
+                    <div class="tweet-community-note">
+                        <div class="tcn-header">Readers added context they thought people might want to know</div>
+                        <div class="tcn-text">it cannot</div>
+                    </div>
+                    <div class="tweet-engagement">
+                        <span class="eng-item eng-reply">
+                            <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M1.751 10c0-4.42 3.584-8 8.005-8h4.366c4.49 0 8.129 3.64 8.129 8.13 0 2.25-.893 4.31-2.457 5.84a8.98 8.98 0 01-4.672 2.39v1.39c0 .55-.26 1.07-.71 1.41-.45.33-1.02.43-1.56.27l-3.69-1.11c-2.58-.78-4.67-2.75-5.58-5.22-.31-.83-.46-1.71-.46-2.61v-2.46zm8.005-6c-3.317 0-6.005 2.69-6.005 6v2.46c0 .71.12 1.39.36 2.04.72 1.95 2.37 3.51 4.41 4.12l3.69 1.11V16.7l.51-.07c1.53-.22 2.93-.97 3.89-2.08 1.05-1.22 1.63-2.78 1.63-4.42 0-3.39-2.746-6.13-6.129-6.13H9.756z"/></svg>
+                        </span>
+                        <span class="eng-item eng-retweet">
+                            <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M4.5 3.88l4.432 4.14-1.364 1.46L5.5 7.55V16c0 1.1.896 2 2 2H13v2H7.5c-2.209 0-4-1.79-4-4V7.55L1.432 9.48.068 8.02 4.5 3.88zM16.5 6H11V4h5.5c2.209 0 4 1.79 4 4v8.45l2.068-1.93 1.364 1.46-4.432 4.14-4.432-4.14 1.364-1.46 2.068 1.93V8c0-1.1-.896-2-2-2z"/></svg>
+                            <span class="eng-count">4.7K</span>
+                        </span>
+                        <span class="eng-item eng-like">
+                            <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M16.697 5.5c-1.222-.06-2.679.51-3.89 2.16l-.805 1.09-.806-1.09C9.984 6.01 8.526 5.44 7.304 5.5c-1.243.07-2.349.78-2.91 1.91-.552 1.12-.633 2.78.479 4.82 1.074 1.97 3.257 4.27 7.129 6.61 3.87-2.34 6.052-4.64 7.126-6.61 1.111-2.04 1.03-3.7.477-4.82-.56-1.13-1.666-1.84-2.908-1.91zm4.187 7.69c-1.351 2.48-4.001 5.12-8.379 7.67l-.503.3-.504-.3c-4.379-2.55-7.029-5.19-8.382-7.67-1.36-2.5-1.41-4.86-.514-6.67.887-1.79 2.647-2.91 4.601-3.01 1.651-.09 3.368.56 4.798 2.01 1.429-1.45 3.146-2.1 4.796-2.01 1.954.1 3.714 1.22 4.601 3.01.896 1.81.846 4.17-.514 6.67z"/></svg>
+                            <span class="eng-count">21.3K</span>
+                        </span>
+                        <span class="eng-item eng-view">
+                            <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M8.75 21V3h2v18h-2zM18 21V8.5h2V21h-2zM4 21v-5.5h2V21H4zm9.248-1V12h2v8h-2z"/></svg>
+                        </span>
+                        <span class="eng-item eng-bookmark">
+                            <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M4 4.5C4 3.12 5.119 2 6.5 2h11C18.881 2 20 3.12 20 4.5v18.44l-8-5.71-8 5.71V4.5zM6.5 4c-.276 0-.5.22-.5.5v14.56l6-4.29 6 4.29V4.5c0-.28-.224-.5-.5-.5h-11z"/></svg>
+                        </span>
+                        <span class="eng-item eng-share">
+                            <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 2.59l5.7 5.7-1.41 1.42L13 6.41V16h-2V6.41l-3.3 3.3-1.41-1.42L12 2.59zM21 15l-.02 3.51c0 1.38-1.12 2.49-2.5 2.49H5.5C4.12 21 3 19.88 3 18.5V15h2v3.5c0 .28.22.5.5.5h12.98c.28 0 .5-.22.5-.5L19 15h2z"/></svg>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right boom column -->
+        <div class="boom-col boom-col-right">
+            <div class="boom-line user"><span class="boom-role">Human</span><span class="boom-word">boom</span></div>
+            <div class="boom-line assistant"><span class="boom-role">Claude</span><span class="boom-word">boom</span></div>
+            <div class="boom-line user fade-4"><span class="boom-role">Human</span><span class="boom-word">boom</span></div>
+            <div class="boom-line assistant fade-4"><span class="boom-role">Claude</span><span class="boom-word">boom</span></div>
+            <div class="boom-line user fade-3"><span class="boom-role">Human</span><span class="boom-word">boom</span></div>
+            <div class="boom-line assistant fade-3"><span class="boom-role">Claude</span><span class="boom-word">boom</span></div>
+            <div class="boom-line user fade-2"><span class="boom-role">Human</span><span class="boom-word">boom</span></div>
+            <div class="boom-line assistant fade-2"><span class="boom-role">Claude</span><span class="boom-word">boom</span></div>
+            <div class="boom-line user fade-1"><span class="boom-role">Human</span><span class="boom-word">boom</span></div>
+            <div class="boom-line assistant fade-1"><span class="boom-role">Claude</span><span class="boom-word">boom</span></div>
+            <div class="boom-line user fade-1"><span class="boom-role">Human</span><span class="boom-word">boom</span></div>
+            <div class="boom-line assistant fade-1"><span class="boom-role">Claude</span><span class="boom-word">boom</span></div>
+        </div>
+    </div>
+
+    <div class="watermark">THE BOOM INCIDENT</div>
+</div>
+
+</body>
+</html>

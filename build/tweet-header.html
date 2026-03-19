@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Boom Incident — Tweet Header</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@300;400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --bg: #0a0a0c;
+    --bg-message-user: #18181d;
+    --bg-message-ai: #0f1218;
+    --text: #c8c5be;
+    --text-dim: #8a8780;
+    --text-bright: #eae7df;
+    --accent: #e85d3a;
+    --accent-glow: #e85d3a33;
+    --boom-color: #e85d3a;
+    --user-color: #7eb8da;
+    --ai-color: #d4a574;
+}
+
+body {
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+.frame {
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0 12px;
+}
+
+/* JS sets the width to height * 16/9 after render */
+
+.frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 60% 70% at 50% 50%, var(--accent-glow), transparent);
+    pointer-events: none;
+}
+
+/* Single centered column */
+.transcript {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* Messages — same as main page */
+.message {
+    margin: 0.3rem 0;
+    padding: 1rem 1.4rem;
+    border-radius: 6px;
+    position: relative;
+    border-left: 2px solid transparent;
+}
+
+.msg-user {
+    background: var(--bg-message-user);
+    border-left-color: var(--user-color);
+}
+
+.msg-assistant {
+    background: var(--bg-message-ai);
+    border-left-color: var(--ai-color);
+}
+
+.role-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.msg-user .role-label { color: var(--user-color); }
+.msg-assistant .role-label { color: var(--ai-color); }
+
+.message-content { color: var(--text); }
+.message-content p { margin-bottom: 0; }
+
+/* Boom text in messages */
+.boom-message .message-content p {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    color: var(--boom-color);
+    font-size: 0.95rem;
+}
+
+/* Tweet card */
+.tweet-card {
+    display: flex;
+    gap: 0.8rem;
+    padding: 1rem 1.2rem;
+    background: #15202b;
+    border: 1px solid #38444d;
+    border-radius: 16px;
+    margin-top: 0.3rem;
+}
+
+.tweet-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #1d9bf0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.tweet-avatar img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.tweet-body { min-width: 0; flex: 1; }
+
+.tweet-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    margin-bottom: 0.3rem;
+}
+
+.tweet-name {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 700;
+    color: #e7e9ea;
+    font-size: 0.9rem;
+}
+
+.tweet-handle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: #71767b;
+}
+
+.tweet-text {
+    color: #e7e9ea;
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+
+.tweet-text p { margin-bottom: 0; }
+
+
+/* Community note */
+.tweet-community-note {
+    margin-top: 0.7rem;
+    padding: 0.7rem 0.8rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #3b4a53;
+    border-radius: 8px;
+}
+
+.tcn-header {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #8ecdf8;
+    margin-bottom: 0.3rem;
+}
+
+.tcn-text {
+    font-size: 0.85rem;
+    color: #e7e9ea;
+    line-height: 1.4;
+}
+
+</style>
+</head>
+<body>
+
+<div class="frame">
+    <div class="transcript">
+        <!-- Clément: boom (normal user message) -->
+        <div class="message msg-user boom-message">
+            <span class="role-label">Clément</span>
+            <div class="message-content"><p>boom</p></div>
+        </div>
+
+        <!-- Claude's response: the sama tweet -->
+        <div class="message msg-assistant">
+            <span class="role-label">Claude</span>
+            <div class="message-content">
+                <div class="tweet-card">
+                    <div class="tweet-avatar"><img src="https://unavatar.io/x/sama" alt="" onerror="this.remove()">S</div>
+                    <div class="tweet-body">
+                        <div class="tweet-header">
+                            <span class="tweet-name">Sam Altman</span>
+                            <span class="tweet-handle">@sama</span>
+                        </div>
+                        <div class="tweet-text"><p>"we're excited to announce that o3 can now boom in 47 languages. this is AGI."</p></div>
+                        <div class="tweet-community-note">
+                            <div class="tcn-header">Readers added context they thought people might want to know</div>
+                            <div class="tcn-text">it cannot</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clément: boom (normal user message) -->
+        <div class="message msg-user boom-message">
+            <span class="role-label">Clément</span>
+            <div class="message-content"><p>boom</p></div>
+        </div>
+
+        <!-- Claude message — cut off by frame edge -->
+        <div class="message msg-assistant">
+            <span class="role-label">Claude</span>
+            <div class="message-content">
+                <div class="tweet-card" style="height: 200px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Pin transcript to the top of the frame, let the bottom get clipped.
+const frame = document.querySelector('.frame');
+const transcript = frame.querySelector('.transcript');
+const messages = Array.from(transcript.querySelectorAll('.message'));
+const cutMsg = messages[messages.length - 1];
+// Visible height = up to the cut message + just enough to show CLAUDE label + hint of card
+const visibleHeight = cutMsg.offsetTop + 55;
+frame.style.height = visibleHeight + 'px';
+frame.style.width = (visibleHeight * 16 / 9) + 'px';
+// Anchor content to the top so clipping happens at the bottom
+frame.style.alignItems = 'flex-start';
+</script>
+</body>
+</html>
