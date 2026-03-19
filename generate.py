@@ -1359,6 +1359,13 @@ HIGHLIGHTS = [
         (83, "message"),
         (85, "message"),
     ]),
+    ("Meanwhile, at Anthropic", [
+        (95, "message"),
+        (97, "message"),
+        (99, "message"),
+        (101, "message"),
+        (103, "message"),
+    ]),
     ("The Discourse", [
         (105, "message"),
         (107, "message"),
