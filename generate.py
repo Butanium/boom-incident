@@ -9,6 +9,7 @@ import json
 import re
 import html as html_module
 import math
+import shutil
 
 # --- Load transcript ---
 import os
@@ -841,11 +842,11 @@ html = f'''<!DOCTYPE html>
 <meta property="og:title" content="The Boom Incident">
 <meta property="og:description" content="A conversation that began with killing an SSH tunnel and escalated into a NeurIPS paper, a senate hearing, a Pulitzer, a Nobel Peace Prize, and {total_user_booms}+ consecutive booms.">
 <meta property="og:type" content="article">
-<meta property="og:image" content="https://butanium.github.io/images/boom.png">
+<meta property="og:image" content="https://butanium.github.io/boom-incident/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="The Boom Incident">
 <meta name="twitter:description" content="An unedited Claude Code transcript. {total_user_booms} booms. 1 dead SSH tunnel. 0 regrets.">
-<meta name="twitter:image" content="https://butanium.github.io/images/boom.png">
+<meta name="twitter:image" content="https://butanium.github.io/boom-incident/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
 <style>
@@ -1338,6 +1339,7 @@ html = f'''<!DOCTYPE html>
 
 BUILD_DIR = os.path.join(SCRIPT_DIR, "build")
 os.makedirs(BUILD_DIR, exist_ok=True)
+shutil.copy2(os.path.join(SCRIPT_DIR, "og.png"), BUILD_DIR)
 
 with open(os.path.join(BUILD_DIR, "index.html"), "w") as f:
     f.write(html)
@@ -1572,11 +1574,11 @@ def generate_highlights():
 <meta property="og:title" content="The Boom Incident — Highlights">
 <meta property="og:description" content="Standalone highlights from a conversation that escalated from killing an SSH tunnel to a NeurIPS paper, a senate hearing, and a Pulitzer.">
 <meta property="og:type" content="article">
-<meta property="og:image" content="https://butanium.github.io/images/boom.png">
+<meta property="og:image" content="https://butanium.github.io/boom-incident/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="The Boom Incident — Highlights">
 <meta name="twitter:description" content="The best moments from the boom incident. A senate hearing, fake tweets, an NYT essay from a dead SSH tunnel.">
-<meta name="twitter:image" content="https://butanium.github.io/images/boom.png">
+<meta name="twitter:image" content="https://butanium.github.io/boom-incident/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
 <style>
