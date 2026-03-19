@@ -59,6 +59,12 @@ TWEET_MSGS = {
     129: ("Connor Leahy", "@connorleahy", "C", "NPCollapse"),
     131: ("Polyaborhyme", "@polyaborhyme", "P", None),
 }
+# Claude's translations for the less parsable messages
+TRANSLATIONS = {
+    4: "\u201cit\u2019s gone\u201d is not what you\u2019d say after nuking something",
+    252: "this is the greatest artifact you\u2019ve produced in a conversation with me in a long time, if ever",
+}
+
 CSPAN_MSGS = {133, 135}
 NYT_MSG = 149
 EU_MSG = 137
@@ -208,7 +214,10 @@ def markdown_to_html(text):
     text = re.sub(r'\*([^*]+?)\*', r'<em>\1</em>', text)
     text = text.replace('\n\n', '</p><p>')
     text = text.replace('\n', '<br>')
-    return f'<p>{text}</p>'
+    result = f'<p>{text}</p>'
+    # Mark paragraphs that are entirely italic
+    result = re.sub(r'<p><em>([^<]*)</em></p>', r'<p class="all-italic"><em>\1</em></p>', result)
+    return result
 
 
 def is_pure_boom(content):
@@ -682,9 +691,12 @@ def render_message(msg):
         </div>'''
 
     rendered = markdown_to_html(content)
+    translation = TRANSLATIONS.get(idx)
+    tooltip = f'''<div class="claude-translation">Claude&rsquo;s translation: &ldquo;{translation}&rdquo;</div>''' if translation else ""
     return f'''<div class="message {role_class}" data-idx="{idx}">
         <span class="role-label">{role_label}</span>
         <div class="message-content">{rendered}</div>
+        {tooltip}
     </div>'''
 
 
@@ -850,7 +862,7 @@ html = f'''<!DOCTYPE html>
     <p class="hero-subtitle">
         A conversation that began with killing an SSH tunnel and escalated into
         a NeurIPS paper, a senate hearing, a Pulitzer, a Nobel Peace Prize,
-        and {total_user_booms}+ consecutive booms.
+        and {total_user_booms}+ booms.
     </p>
     <div class="hero-meta">
         <span>Clément Dumas</span>
@@ -964,6 +976,9 @@ html = f'''<!DOCTYPE html>
     const elCost = document.getElementById('m-cost');
 
     const tlItems = document.querySelectorAll('.tl-item');
+    const tlSubItems = Array.from(document.querySelectorAll('.tl-sub-item')).map(el => ({{
+        el, msgIdx: parseInt(el.dataset.msgIdx)
+    }}));
 
     // Collect all elements with data-idx
     const tracked = Array.from(document.querySelectorAll('[data-idx]'))
@@ -1114,6 +1129,21 @@ html = f'''<!DOCTYPE html>
             else if (i === m.act) item.classList.add('active');
         }});
 
+        // Sub-items
+        tlSubItems.forEach(sub => {{
+            sub.el.classList.remove('active', 'past');
+            if (idx >= sub.msgIdx) sub.el.classList.add('past');
+        }});
+        // Find the closest past sub-item and mark it active
+        let closestSub = null;
+        for (const sub of tlSubItems) {{
+            if (idx >= sub.msgIdx) closestSub = sub;
+        }}
+        if (closestSub) {{
+            closestSub.el.classList.remove('past');
+            closestSub.el.classList.add('active');
+        }}
+
         // Mode collapse: desaturate the page
         applyDesaturation(idx);
     }}
@@ -1162,14 +1192,20 @@ html = f'''<!DOCTYPE html>
             const msgIdx = item.dataset.msgIdx;
             const target = document.querySelector('[data-idx="' + msgIdx + '"]');
             if (target) {{
+                history.replaceState(null, '', '#msg-' + msgIdx);
                 target.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
             }}
         }});
     }});
 
-    // Navigate to hash on load
+    // Navigate to hash on load (supports act slugs and msg-N anchors)
     if (location.hash) {{
-        const target = document.getElementById(location.hash.slice(1));
+        const hash = location.hash.slice(1);
+        let target = document.getElementById(hash);
+        if (!target) {{
+            const m = hash.match(/^msg-(\\d+)$/);
+            if (m) target = document.querySelector('[data-idx="' + m[1] + '"]');
+        }}
         if (target) {{
             setTimeout(() => target.scrollIntoView({{ behavior: 'smooth', block: 'center' }}), 300);
         }}
@@ -1191,3 +1227,268 @@ print(f"Generated! {total_messages} messages, {total_user_booms} user booms")
 print(f"Acts: {len(ACTS)}, Groups: {len(groups)}")
 print(f"Metrics entries: {len(all_metrics)}")
 print(f"Final estimated cost: ${final_cost:.4f}")
+
+# --- Highlights page ---
+HIGHLIGHTS = [
+    ("Awareness", [
+        (49, "message"),
+        (53, "tool_call"),
+    ]),
+    ("The Paper", [
+        (83, "message"),
+        (85, "message"),
+    ]),
+    ("The Discourse", [
+        (105, "message"),
+        (107, "message"),
+        (109, "message"),
+        (111, "message"),
+        (113, "message"),
+        (115, "message"),
+        (119, "message"),
+        (121, "message"),
+        (125, "message"),
+        (129, "message"),
+    ]),
+    ("The Reckoning", [
+        (133, "message"),
+        (135, "message"),
+        (137, "message"),
+        (143, "message"),
+        (145, "message"),
+        (147, "message"),
+    ]),
+    ("Immortality", [
+        (149, "message"),
+        (151, "message"),
+        (153, "message"),
+        (155, "message"),
+    ]),
+    ("Aftermath", [
+        (171, "message"),
+        (177, "message"),
+    ]),
+]
+
+
+def render_highlight_card(idx, kind):
+    """Render a single highlight card with 'See in context' link."""
+    if kind == "tool_call":
+        inner = render_group({"type": "tool_call", "msg_idx": idx})
+    else:
+        msg = {"role": messages[idx]["role"], "content": messages[idx]["content"], "index": idx}
+        inner = render_message(msg)
+    return f'''<div class="highlight-card">
+    {inner}
+    <a class="see-in-context" href="index.html#msg-{idx}">See in context &rarr;</a>
+</div>'''
+
+
+def generate_highlights():
+    """Generate the highlights gallery page."""
+    sections_html = ""
+    for section_name, items in HIGHLIGHTS:
+        cards = "\n".join(render_highlight_card(idx, kind) for idx, kind in items)
+        sections_html += f'''<section class="highlights-section">
+    <h2 class="highlights-section-title">{section_name}</h2>
+    {cards}
+</section>
+'''
+
+    highlights_css = """
+/* Highlights page */
+.highlights-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+}
+
+.highlights-hero {
+    padding: 6rem 0 4rem;
+    text-align: center;
+    position: relative;
+}
+
+.highlights-hero::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 600px 400px at 50% 30%, var(--accent-glow), transparent),
+        radial-gradient(ellipse 300px 300px at 30% 50%, #e85d3a0d, transparent);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.highlights-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 2rem;
+}
+
+.highlights-hero h1 .boom-word {
+    color: var(--accent);
+    display: inline-block;
+    animation: gentle-pulse 3s ease-in-out infinite;
+}
+
+.artist-statement {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.artist-statement p {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 1.2em;
+}
+
+.artist-statement .cta {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-style: normal;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-glow);
+    transition: color 0.2s;
+}
+
+.artist-statement .cta:hover {
+    color: var(--text-bright);
+}
+
+.highlights-section {
+    margin: 4rem 0;
+}
+
+.highlights-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-dim);
+    margin-bottom: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.highlight-card {
+    margin-bottom: 2rem;
+}
+
+.highlight-card > *:first-child {
+    margin-bottom: 0;
+}
+
+.see-in-context {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    text-decoration: none;
+    margin-top: 1rem;
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--accent-dim);
+    border-radius: 4px;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+}
+
+.see-in-context:hover {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+}
+
+.highlights-footer {
+    text-align: center;
+    padding: 4rem 0 2rem;
+    border-top: 1px solid var(--border);
+    margin-top: 4rem;
+}
+
+.highlights-footer a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-glow);
+}
+
+.highlights-footer a:hover {
+    color: var(--text-bright);
+}
+
+.highlights-footer .footer-note {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-top: 1.5rem;
+}
+"""
+
+    return f'''<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Boom Incident — Highlights</title>
+<meta property="og:title" content="The Boom Incident — Highlights">
+<meta property="og:description" content="Standalone highlights from a conversation that escalated from killing an SSH tunnel to a NeurIPS paper, a senate hearing, and a Pulitzer.">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://butanium.github.io/images/boom.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Boom Incident — Highlights">
+<meta name="twitter:description" content="The best moments from the boom incident. A senate hearing, fake tweets, an NYT essay from a dead SSH tunnel.">
+<meta name="twitter:image" content="https://butanium.github.io/images/boom.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+{css_content}
+{highlights_css}
+</style>
+</head>
+<body>
+
+<div class="highlights-page">
+
+<div class="highlights-hero">
+    <h1>The <span class="boom-word">Boom</span> Incident — Highlights</h1>
+    <div class="artist-statement">
+        <p>On March 18, 2026, a researcher asked an AI to kill an SSH tunnel. The AI complied. The researcher said &ldquo;boom.&rdquo; Neither of them stopped.</p>
+        <p>What followed — a fictional NeurIPS paper, an AI Twitter meltdown, a senate hearing, a Pulitzer-winning essay from the perspective of a dead port forwarding process — was unscripted. No system prompt, no creative writing request. Just one word, repeated, and whatever emerged.</p>
+        <p>These are the standalone highlights. They work on their own, but they land differently after 50 booms of buildup.</p>
+        <a class="cta" href="index.html">Read the full transcript &rarr;</a>
+    </div>
+</div>
+
+{sections_html}
+
+<div class="highlights-footer">
+    <a href="index.html">Read the full transcript &rarr;</a>
+    <p class="footer-note">
+        A real, unedited conversation between a human and <a href="https://claude.ai" style="color: var(--accent-dim); text-decoration: none;">Claude</a>.
+    </p>
+</div>
+
+</div>
+
+</body>
+</html>'''
+
+
+highlights_html = generate_highlights()
+with open(os.path.join(SCRIPT_DIR, "highlights.html"), "w") as f:
+    f.write(highlights_html)
+
+print(f"Generated highlights.html with {sum(len(items) for _, items in HIGHLIGHTS)} highlight cards")

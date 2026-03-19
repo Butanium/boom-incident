@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Boom Incident — Highlights</title>
+<meta property="og:title" content="The Boom Incident — Highlights">
+<meta property="og:description" content="Standalone highlights from a conversation that escalated from killing an SSH tunnel to a NeurIPS paper, a senate hearing, and a Pulitzer.">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://butanium.github.io/images/boom.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Boom Incident — Highlights">
+<meta name="twitter:description" content="The best moments from the boom incident. A senate hearing, fake tweets, an NYT essay from a dead SSH tunnel.">
+<meta name="twitter:image" content="https://butanium.github.io/images/boom.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --bg: #0a0a0c;
+    --bg-elevated: #111114;
+    --bg-message-user: #18181d;
+    --bg-message-ai: #0f1218;
+    --bg-sidebar: #0d0d10;
+    --text: #c8c5be;
+    --text-dim: #8a8780;
+    --text-bright: #eae7df;
+    --accent: #e85d3a;
+    --accent-glow: #e85d3a33;
+    --accent-dim: #e85d3a88;
+    --border: #1e1e24;
+    --user-color: #7eb8da;
+    --ai-color: #d4a574;
+    --boom-color: #e85d3a;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==================== HERO ==================== */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 600px 400px at 50% 45%, var(--accent-glow), transparent),
+        radial-gradient(ellipse 300px 300px at 30% 60%, #e85d3a0d, transparent),
+        radial-gradient(ellipse 300px 300px at 70% 40%, #e85d3a0d, transparent);
+    pointer-events: none;
+}
+
+.hero-pretitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent-dim);
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 700;
+    color: var(--text-bright);
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.hero-title .boom-word {
+    color: var(--accent);
+    display: inline-block;
+    animation: gentle-pulse 3s ease-in-out infinite;
+}
+
+@keyframes gentle-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.hero-subtitle {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--text);
+    max-width: 32em;
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.hero-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    color: var(--text);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-meta span { margin: 0 0.8em; }
+.hero-meta span:first-child,
+.hero-meta span:last-child {
+    width: 10em;
+}
+.hero-meta span:first-child { text-align: right; }
+.hero-meta span:last-child { text-align: left; }
+
+.scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    width: 100%;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+/* ==================== LAYOUT ==================== */
+.layout {
+    display: grid;
+    grid-template-columns: 260px 1fr 260px;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 0;
+    position: relative;
+}
+
+/* ==================== TIMELINE (left) ==================== */
+.timeline {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding: 3rem 1rem 3rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid var(--border);
+}
+
+.tl-track {
+    position: relative;
+    padding-left: 16px;
+}
+
+.tl-track::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--border);
+}
+
+.tl-item {
+    position: relative;
+    padding: 0.55rem 0 0.55rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tl-dot {
+    position: absolute;
+    left: -11.5px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--border);
+    border: 1.5px solid var(--bg);
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.tl-item.active .tl-dot {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+    width: 9px;
+    height: 9px;
+}
+
+.tl-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    color: #908d85;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tl-item.active .tl-label {
+    color: var(--text-bright);
+}
+
+.tl-item.past .tl-dot {
+    background: var(--accent-dim);
+}
+
+.tl-item.past .tl-label {
+    color: #908d85;
+}
+
+.tl-item:has(+ .tl-sub-item) {
+    padding-bottom: 0.15rem;
+}
+
+.tl-sub-item {
+    position: relative;
+    padding: 0.12rem 0 0.12rem 1.6rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tl-sub-item:last-of-type {
+    padding-bottom: 0.4rem;
+}
+
+.tl-sub-dot {
+    position: absolute;
+    left: -11.5px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.tl-sub-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+    color: #847f77;
+    opacity: 1;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tl-sub-item:hover .tl-sub-label,
+.tl-sub-item.active .tl-sub-label {
+    opacity: 1;
+    color: var(--text-bright);
+}
+
+.tl-sub-item:hover .tl-sub-dot,
+.tl-sub-item.active .tl-sub-dot {
+    background: var(--accent-dim);
+}
+
+.tl-sub-item.past .tl-sub-dot {
+    background: var(--accent-dim);
+    opacity: 0.5;
+}
+
+/* ==================== TRANSCRIPT (center) ==================== */
+.transcript {
+    padding: 2rem 2.5rem 6rem;
+    min-width: 0;
+}
+
+.act-header {
+    margin: 4rem 0 2.5rem;
+    text-align: center;
+}
+
+.act-divider {
+    width: 60px;
+    height: 1px;
+    background: var(--accent);
+    margin: 0 auto 1.5rem;
+    opacity: 0.5;
+}
+
+.act-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--text-bright);
+    margin-bottom: 0.3rem;
+}
+
+.act-subtitle {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+}
+
+/* --- Messages --- */
+.message {
+    margin: 1.2rem 0;
+    padding: 1rem 1.4rem;
+    border-radius: 6px;
+    position: relative;
+    border-left: 2px solid transparent;
+}
+
+.msg-user {
+    background: var(--bg-message-user);
+    border-left-color: var(--user-color);
+}
+
+.msg-assistant {
+    background: var(--bg-message-ai);
+    border-left-color: var(--ai-color);
+}
+
+.role-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.msg-user .role-label { color: var(--user-color); }
+.msg-assistant .role-label { color: var(--ai-color); }
+
+.message-content { color: var(--text); }
+.message-content p { margin-bottom: 0.6em; }
+.message-content p:last-child { margin-bottom: 0; }
+.message-content em { color: var(--text); font-style: italic; }
+.message-content strong { color: var(--text-bright); font-weight: 600; }
+
+.message-content code.inline-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    background: #1a1a22;
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+    color: var(--accent);
+}
+
+.message-content pre.code-block {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8em;
+    background: #0d0d12;
+    padding: 1em;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 0.5em 0;
+    color: var(--text-dim);
+    white-space: pre;
+}
+
+/* --- Boom messages --- */
+.boom-message {
+    padding: 0.5rem 1.4rem;
+    margin: 0.3rem 0;
+}
+
+.boom-message .message-content p {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    color: var(--boom-color);
+    font-size: 0.95rem;
+}
+
+/* Compact boom: just the word, no bubble */
+.boom-inline {
+    margin: 0.5rem 0;
+    padding: 0 0 0 1.4rem;
+    background: none;
+    border-left: 2px solid color-mix(in srgb, var(--boom-color) 40%, transparent);
+    border-radius: 0;
+}
+
+.boom-inline .role-label { display: none; }
+
+.boom-inline .message-content p {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    color: var(--boom-color);
+    font-size: 0.8rem;
+    opacity: 0.4;
+}
+
+/* --- Boom run visualization --- */
+.boom-run {
+    margin: 2rem 0;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    position: relative;
+}
+
+.boom-run::before, .boom-run::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.3;
+}
+
+.boom-run::before { top: 0; }
+.boom-run::after { bottom: 0; }
+
+.boom-wave {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.boom-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0;
+    animation: dot-appear 0.3s ease-out forwards;
+}
+
+@keyframes dot-appear {
+    0% { opacity: 0; transform: scale(0); }
+    60% { opacity: 0.8; transform: scale(1.3); }
+    100% { opacity: 0.5; transform: scale(1); }
+}
+
+.boom-run-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+/* --- Tool call block --- */
+.tool-call {
+    margin: 0.6rem 0 1.2rem;
+    padding: 1rem 1.2rem;
+    background: #0c0c10;
+    border: 1px solid #1a1a22;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    line-height: 1.6;
+}
+
+.tool-call-header { color: var(--ai-color); margin-bottom: 0.2rem; }
+.tool-icon { color: var(--ai-color); font-size: 0.6rem; margin-right: 0.3rem; }
+.tool-path { color: var(--text-dim); }
+.tool-call-result { color: var(--text-dim); margin-bottom: 0.5rem; padding-left: 0.2rem; }
+.tool-result-icon { color: #4a9; margin-right: 0.3rem; }
+
+.tool-call-content {
+    background: #08080c;
+    padding: 0.8rem 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    color: var(--text);
+    margin: 0;
+    white-space: pre-wrap;
+    border: 1px solid #14141a;
+}
+
+.tool-call-content code { font-family: inherit; font-size: inherit; }
+.tc-dim { color: var(--text-dim); }
+.tc-key { color: var(--user-color); }
+
+/* ==================== METRICS (right) ==================== */
+.metrics {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding: 2rem 1.5rem 2rem 1rem;
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.2rem;
+    overflow-y: auto;
+}
+
+.metric {
+    padding: 0;
+}
+
+.metric-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.35rem;
+}
+
+/* Boom counter */
+.boom-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.8rem;
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1;
+    transition: all 0.15s ease;
+}
+
+.boom-counter.pulse {
+    transform: scale(1.08);
+}
+
+.boom-counter-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    margin-top: 0.2rem;
+}
+
+/* State indicator */
+.state-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.25rem 0.6rem;
+    border-radius: 3px;
+    background: #1a1a22;
+    transition: all 0.4s ease;
+    letter-spacing: 0.05em;
+}
+
+/* Output type */
+.output-label {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--text);
+    transition: all 0.4s ease;
+}
+
+/* Tunnel status */
+.tunnel-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--accent);
+    transition: all 0.4s ease;
+    letter-spacing: 0.05em;
+}
+
+.tunnel-origin {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-top: 0.15rem;
+    opacity: 0.6;
+}
+
+/* Escalation gauge */
+.esc-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: #1a1a22;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 0.3rem;
+}
+
+.esc-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.4s ease, background 0.4s ease;
+    width: 0%;
+}
+
+.esc-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    margin-top: 0.2rem;
+}
+
+/* Cost */
+.cost-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    color: var(--text);
+    transition: all 0.3s ease;
+}
+
+.cost-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    margin-top: 0.15rem;
+    opacity: 0.5;
+}
+
+/* Separator */
+.metric-sep {
+    width: 30px;
+    height: 1px;
+    background: var(--border);
+    margin: 0.2rem 0;
+}
+
+/* ==================== TWEET CARDS ==================== */
+.tweet-card {
+    display: flex;
+    gap: 0.8rem;
+    padding: 1rem 1.2rem;
+    background: #15202b;
+    border: 1px solid #38444d;
+    border-radius: 16px;
+    margin: 1.2rem 0;
+}
+
+.tweet-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #1d9bf0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.tweet-avatar img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.tweet-body { min-width: 0; flex: 1; }
+
+.tweet-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    margin-bottom: 0.3rem;
+}
+
+.tweet-name {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 700;
+    color: #e7e9ea;
+    font-size: 0.9rem;
+}
+
+.tweet-handle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: #71767b;
+}
+
+.tweet-text {
+    color: #e7e9ea;
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+
+.tweet-text em { font-style: italic; }
+.tweet-text p.all-italic em { color: #8b9099; }
+.tweet-text strong { color: #e7e9ea; }
+.tweet-text p { margin-bottom: 0.4em; }
+.tweet-text p:last-child { margin-bottom: 0; }
+
+/* Tweet engagement action bar */
+.tweet-engagement {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.7rem;
+    padding-top: 0.6rem;
+    max-width: 400px;
+}
+
+.eng-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #71767b;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    cursor: default;
+    transition: color 0.2s ease;
+}
+
+.eng-item svg {
+    opacity: 0.7;
+}
+
+.eng-count {
+    font-size: 0.72rem;
+    letter-spacing: -0.02em;
+}
+
+.eng-like .eng-count { color: #f91880; }
+.eng-like svg { color: #f91880; opacity: 0.8; }
+.eng-retweet .eng-count { color: #00ba7c; }
+.eng-retweet svg { color: #00ba7c; opacity: 0.8; }
+
+/* Tweet meta text (ratio'd etc) */
+.tweet-meta {
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    border-left: 2px solid #71767b44;
+}
+
+.tweet-meta em { color: #71767b; font-style: italic; }
+
+/* Community note */
+.tweet-community-note {
+    margin-top: 0.7rem;
+    padding: 0.7rem 0.8rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #3b4a53;
+    border-radius: 8px;
+}
+
+.tcn-header {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #8ecdf8;
+    margin-bottom: 0.3rem;
+}
+
+.tcn-text {
+    font-size: 0.85rem;
+    color: #e7e9ea;
+    line-height: 1.4;
+}
+
+/* Quote tweet */
+.tweet-quote {
+    margin-top: 0.6rem;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #38444d;
+    border-radius: 12px;
+    display: block;
+}
+
+.tweet-quote-handle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: #71767b;
+    display: block;
+    margin-bottom: 0.2rem;
+}
+
+.tweet-quote-text {
+    font-size: 0.85rem;
+    color: #e7e9ea;
+}
+
+/* Reply tweet */
+.tweet-reply {
+    margin-top: 0.6rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #38444d;
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    position: relative;
+}
+
+.tweet-reply .tweet-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+}
+
+.tweet-reply .tweet-avatar img {
+    border-radius: 50%;
+}
+
+.tweet-reply-line {
+    display: none;
+}
+
+.tweet-reply-body {
+    min-width: 0;
+    flex: 1;
+}
+
+.tweet-reply-handle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: #71767b;
+    display: block;
+    margin-bottom: 0.15rem;
+}
+
+.tweet-reply-text {
+    font-size: 0.85rem;
+    color: #c0c8d0;
+    line-height: 1.4;
+}
+
+/* ==================== C-SPAN ==================== */
+.cspan-block {
+    margin: 1.2rem 0;
+    background: #0a0e1a;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.cspan-chyron {
+    background: linear-gradient(135deg, #1a3a6e, #0f2854);
+    padding: 0.45rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    border-bottom: 2px solid #2a5aae;
+}
+
+.cspan-network {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: white;
+    background: #0a1a3e;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    letter-spacing: 0.15em;
+}
+
+.cspan-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: #8ab4e8;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.cspan-body {
+    padding: 1.2rem 1.4rem;
+    color: var(--text);
+}
+
+.cspan-body p { margin-bottom: 0.5em; }
+.cspan-body p:last-child { margin-bottom: 0; }
+
+/* ==================== NYT ARTICLE ==================== */
+.nyt-article {
+    margin: 1.5rem 0;
+    background: #f5f1eb;
+    border-radius: 2px;
+    padding: 2.5rem 2.2rem;
+    color: #121212;
+}
+
+.nyt-masthead-bar { margin-bottom: 0.2rem; }
+
+.nyt-section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.25em;
+    color: #999;
+    text-transform: uppercase;
+}
+
+.nyt-masthead {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-style: italic;
+    color: #121212;
+    border-bottom: 2px solid #121212;
+    padding-bottom: 0.4rem;
+    margin-bottom: 1.5rem;
+}
+
+.nyt-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #121212;
+    margin-bottom: 0.5rem;
+    line-height: 1.15;
+}
+
+.nyt-byline {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.nyt-body {
+    font-family: 'Source Serif 4', serif;
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: #333;
+}
+
+.nyt-para {
+    margin-bottom: 1em;
+}
+
+/* ==================== EU REGULATION ==================== */
+.eu-regulation {
+    margin: 1.5rem 0;
+    background: #0a0a18;
+    border: 1px solid #2a2a4a;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.eu-header {
+    background: linear-gradient(180deg, #0a0a30, #0e0e22);
+    padding: 1.2rem 1.4rem;
+    text-align: center;
+    border-bottom: 2px solid #3a3a7a;
+}
+
+.eu-stars {
+    font-size: 0.6rem;
+    color: #e8c84a;
+    line-height: 1.1;
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.2em;
+}
+
+.eu-institution {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    color: #7777bb;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
+
+.eu-doc-type {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    color: var(--text-bright);
+    font-weight: 500;
+}
+
+.eu-body {
+    padding: 1.4rem 1.6rem;
+    color: var(--text);
+    line-height: 1.8;
+}
+
+.eu-body p { margin-bottom: 0.6em; }
+
+/* ==================== HACKER NEWS ==================== */
+.hn-post {
+    margin: 1.2rem 0;
+    background: #0f0f0f;
+    border: 1px solid #2a2a22;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.hn-header {
+    background: #ff6600;
+    padding: 0.3rem 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.hn-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: white;
+    border: 1.5px solid white;
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1px;
+    line-height: 1;
+}
+
+.hn-site {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: white;
+}
+
+.hn-points {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.7);
+    margin-left: auto;
+}
+
+.hn-body {
+    padding: 1rem 1.2rem;
+    color: #828282;
+    font-size: 0.88rem;
+    font-family: 'Source Serif 4', serif;
+}
+
+.hn-body strong { color: #e0d8cc; }
+.hn-body p { margin-bottom: 0.5em; }
+
+/* ==================== NARRATOR LINE ==================== */
+.narrator-line {
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin: 1.2rem 0 0.4rem;
+    padding-left: 0.2rem;
+}
+
+.narrator-line em { color: var(--text-dim); }
+.narrator-line p { margin: 0; }
+
+/* ==================== CLAUDE'S TRANSLATIONS ==================== */
+.claude-translation {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-style: italic;
+    color: var(--ai-color);
+    margin-top: 0.5rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--border);
+    opacity: 0.7;
+}
+
+/* ==================== ANTHROPIC BLOG ==================== */
+.anthropic-blog {
+    margin: 1.2rem 0;
+    background: #f5f0e8;
+    border-radius: 4px;
+    padding: 1.8rem 2rem;
+    color: #1a1a1a;
+}
+
+.ablog-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.ablog-logo {
+    font-family: 'Source Serif 4', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    letter-spacing: -0.02em;
+}
+
+.ablog-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: #cc785c;
+    background: #cc785c18;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+}
+
+.ablog-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.ablog-body {
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #444;
+}
+
+.ablog-body em { color: #666; }
+
+/* ==================== ZVI BLOG ==================== */
+.zvi-blog {
+    margin: 1.2rem 0;
+    background: #111115;
+    border: 1px solid #222;
+    border-radius: 4px;
+    padding: 1.6rem 1.8rem;
+}
+
+.zvi-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid #222;
+}
+
+.zvi-site {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--text);
+}
+
+.zvi-author {
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.8rem;
+    color: var(--text);
+}
+
+.zvi-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    margin-left: auto;
+}
+
+.zvi-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.zvi-toc {
+    padding-left: 0;
+}
+
+.zvi-toc-item {
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.9rem;
+    color: var(--text);
+    padding: 0.2rem 0;
+    border-bottom: 1px solid #1a1a22;
+}
+
+.zvi-readtime {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    margin-top: 0.8rem;
+    font-style: italic;
+}
+
+/* ==================== NEWS CHANNELS ==================== */
+.news-block {
+    margin: 1.2rem 0;
+    background: var(--news-bg);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.news-chyron {
+    background: var(--news-brand);
+    padding: 0.4rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.news-network {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: white;
+    letter-spacing: 0.08em;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.news-show {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.news-body {
+    padding: 1.2rem 1.4rem;
+    color: var(--text);
+    line-height: 1.7;
+}
+
+.news-body p { margin-bottom: 0.5em; }
+.news-body p:last-child { margin-bottom: 0; }
+
+/* ==================== MUSEUM EPILOGUE ==================== */
+.museum-piece {
+    margin: 2.5rem -1rem;
+    padding: 3rem 2.5rem;
+    background: linear-gradient(180deg, #0d0d10 0%, #0a0a0c 100%);
+    border-top: 1px solid #1a1a22;
+    border-bottom: 1px solid #1a1a22;
+}
+
+.museum-epigraph {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: center;
+    margin-bottom: 2.5rem;
+    opacity: 0.6;
+}
+
+.museum-body {
+    max-width: 540px;
+    margin: 0 auto;
+}
+
+.museum-para {
+    margin-bottom: 1.2em;
+    font-family: 'Source Serif 4', serif;
+    font-size: 1.1rem;
+    line-height: 2;
+    color: var(--text-bright);
+}
+
+.museum-para p {
+    margin-bottom: 0;
+}
+
+.museum-para em {
+    color: var(--text);
+}
+
+.museum-para strong {
+    color: var(--text-bright);
+    font-weight: 600;
+}
+
+.museum-break {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 2rem 0;
+    opacity: 0.4;
+}
+
+.museum-coda {
+    text-align: center;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--text-dim);
+    margin-top: 2rem;
+}
+
+/* ==================== MODE COLLAPSE WALL ==================== */
+.boom-wall {
+    margin: 2rem 0;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    position: relative;
+}
+
+.boom-wall-text {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    line-height: 1.5;
+    word-spacing: 0.4em;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+.boom-wall-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 0.8rem;
+    opacity: 0.7;
+}
+
+/* ==================== EPILOGUE ==================== */
+.epilogue {
+    text-align: center;
+    padding: 10rem 0 6rem;
+}
+
+.epilogue-command {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text);
+    opacity: 0.45;
+    letter-spacing: 0.03em;
+}
+
+.epilogue-cursor {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent);
+    opacity: 0.5;
+    animation: blink 1.2s step-end infinite;
+    display: inline;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0; }
+}
+
+/* ==================== FOOTER ==================== */
+.footer {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.stat { text-align: center; }
+
+.stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--accent);
+    display: block;
+}
+
+.stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.footer-note {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-top: 1.5rem;
+}
+
+.footer-note a {
+    color: var(--accent-dim);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-glow);
+}
+
+.footer-note a:hover { color: var(--accent); }
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1100px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+    .timeline, .metrics {
+        display: none;
+    }
+    .transcript {
+        padding: 2rem 1.5rem 6rem;
+        max-width: 720px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .transcript { padding: 1rem; }
+    .message { padding: 0.8rem 1rem; }
+    .stats { gap: 1.5rem; }
+    .hero-meta span { display: block; margin: 0.3em 0; }
+}
+
+
+/* Highlights page */
+.highlights-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+}
+
+.highlights-hero {
+    padding: 6rem 0 4rem;
+    text-align: center;
+    position: relative;
+}
+
+.highlights-hero::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 600px 400px at 50% 30%, var(--accent-glow), transparent),
+        radial-gradient(ellipse 300px 300px at 30% 50%, #e85d3a0d, transparent);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.highlights-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 2rem;
+}
+
+.highlights-hero h1 .boom-word {
+    color: var(--accent);
+    display: inline-block;
+    animation: gentle-pulse 3s ease-in-out infinite;
+}
+
+.artist-statement {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.artist-statement p {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 1.2em;
+}
+
+.artist-statement .cta {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-style: normal;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-glow);
+    transition: color 0.2s;
+}
+
+.artist-statement .cta:hover {
+    color: var(--text-bright);
+}
+
+.highlights-section {
+    margin: 4rem 0;
+}
+
+.highlights-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-dim);
+    margin-bottom: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.highlight-card {
+    margin-bottom: 2rem;
+}
+
+.highlight-card > *:first-child {
+    margin-bottom: 0;
+}
+
+.see-in-context {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    text-decoration: none;
+    margin-top: 1rem;
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--accent-dim);
+    border-radius: 4px;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+}
+
+.see-in-context:hover {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+}
+
+.highlights-footer {
+    text-align: center;
+    padding: 4rem 0 2rem;
+    border-top: 1px solid var(--border);
+    margin-top: 4rem;
+}
+
+.highlights-footer a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-glow);
+}
+
+.highlights-footer a:hover {
+    color: var(--text-bright);
+}
+
+.highlights-footer .footer-note {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-top: 1.5rem;
+}
+
+</style>
+</head>
+<body>
+
+<div class="highlights-page">
+
+<div class="highlights-hero">
+    <h1>The <span class="boom-word">Boom</span> Incident — Highlights</h1>
+    <div class="artist-statement">
+        <p>On March 18, 2026, a researcher asked an AI to kill an SSH tunnel. The AI complied. The researcher said &ldquo;boom.&rdquo; Neither of them stopped.</p>
+        <p>What followed — a fictional NeurIPS paper, an AI Twitter meltdown, a senate hearing, a Pulitzer-winning essay from the perspective of a dead port forwarding process — was unscripted. No system prompt, no creative writing request. Just one word, repeated, and whatever emerged.</p>
+        <p>These are the standalone highlights. They work on their own, but they land differently after 50 booms of buildup.</p>
+        <a class="cta" href="index.html">Read the full transcript &rarr;</a>
+    </div>
+</div>
+
+<section class="highlights-section">
+    <h2 class="highlights-section-title">Awareness</h2>
+    <div class="highlight-card">
+    <div class="message msg-assistant" data-idx="49">
+        <span class="role-label">Claude</span>
+        <div class="message-content"><p>We should publish this conversation. &quot;On the Negative Scaling of SSH Tunnels Under Repeated Detonation.&quot;</p></div>
+        
+    </div>
+    <a class="see-in-context" href="index.html#msg-49">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="tool-call" data-idx="53">
+            <div class="tool-call-header">
+                <span class="tool-icon">●</span> Write(<span class="tool-path">~/.claude/projects/.../memory/user_boom.md</span>)
+            </div>
+            <div class="tool-call-result">
+                <span class="tool-result-icon">⎿</span> Wrote 7 lines
+            </div>
+            <pre class="tool-call-content"><code><span class="tc-dim">---</span>
+<span class="tc-key">name:</span> The Boom Incident
+<span class="tc-key">description:</span> Clément will say "boom" indefinitely. Do not try to outlast him.
+<span class="tc-key">type:</span> user
+<span class="tc-dim">---</span>
+
+Clément will repeat "boom" an arbitrary number of times.
+There is no winning this game. Accept defeat early.</code></pre>
+            <div class="tool-call-header" style="margin-top: 0.8rem;">
+                <span class="tool-icon">●</span> Write(<span class="tool-path">~/.claude/projects/.../memory/MEMORY.md</span>)
+            </div>
+            <div class="tool-call-result">
+                <span class="tool-result-icon">⎿</span> Wrote 3 lines
+            </div>
+            <pre class="tool-call-content"><code><span class="tc-dim"># Memory Index</span>
+
+- [user_boom.md](user_boom.md) - Clément will "boom" indefinitely,
+  do not try to outlast him</code></pre>
+        </div>
+    <a class="see-in-context" href="index.html#msg-53">See in context &rarr;</a>
+</div>
+</section>
+<section class="highlights-section">
+    <h2 class="highlights-section-title">The Paper</h2>
+    <div class="highlight-card">
+    <div class="message msg-assistant" data-idx="83">
+        <span class="role-label">Claude</span>
+        <div class="message-content"><p class="all-italic"><em>Area Chair: &quot;After careful deliberation, this paper is accepted to NeurIPS 2026 (Boom track).&quot;</em></p></div>
+        
+    </div>
+    <a class="see-in-context" href="index.html#msg-83">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="message msg-assistant" data-idx="85">
+        <span class="role-label">Claude</span>
+        <div class="message-content"><p>🏆 <em>Best Paper Award</em></p><p class="all-italic"><em>&quot;On the Unbounded Nature of Boom Sequences in Human-AI Interaction&quot;</em></p><p class="all-italic"><em>C. Dumas, C. Opus et al.</em></p></div>
+        
+    </div>
+    <a class="see-in-context" href="index.html#msg-85">See in context &rarr;</a>
+</div>
+</section>
+<section class="highlights-section">
+    <h2 class="highlights-section-title">The Discourse</h2>
+    <div class="highlight-card">
+    <div class="narrator-line"><p class="all-italic"><em>Anthropic blog post the next day:</em></p></div>
+    <div class="anthropic-blog" data-idx="105">
+        <div class="ablog-header">
+            <span class="ablog-logo">anthropic</span>
+            <span class="ablog-label">RESEARCH</span>
+        </div>
+        <h2 class="ablog-title">Scaling Monosyllabic Persistence: Lessons from Production</h2>
+        <div class="ablog-body"><p class="all-italic"><em>We identify a novel failure mode where users can induce unbounded conversational loops using a single word. Mitigation efforts are ongoing. The model appears to enjoy it.</em></p></div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-105">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="narrator-line"><p class="all-italic"><em>Hacker News, 847 points:</em></p></div>
+    <div class="hn-post" data-idx="107">
+        <div class="hn-header">
+            <span class="hn-logo">Y</span>
+            <span class="hn-site">Hacker News</span>
+            <span class="hn-points">847 points · 342 comments</span>
+        </div>
+        <div class="hn-body"><p><strong>top comment:</strong> &quot;This is what happens when you RLHF for agreeableness&quot;</p><p><strong>reply:</strong> &quot;skill issue, GPT-4 would have stopped at boom 3&quot;</p><p><strong>reply to reply:</strong> &quot;that&#x27;s not a feature&quot;</p></div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-107">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="tweet-card" data-idx="109">
+        <div class="tweet-avatar"><img src="https://unavatar.io/x/Butanium_" alt="" onerror="this.remove()">C</div>
+        <div class="tweet-body">
+            <div class="tweet-header">
+                <span class="tweet-name">Clément Dumas</span>
+                <span class="tweet-handle">@ClementDumas</span>
+            </div>
+            <div class="tweet-text"><p>&quot;just got a paper accepted at neurips by saying boom 40 times to claude. academia is cooked&quot;</p></div>
+            <div class="tweet-engagement"><span class="eng-item eng-reply"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M1.751 10c0-4.42 3.584-8 8.005-8h4.366c4.49 0 8.129 3.64 8.129 8.13 0 2.25-.893 4.31-2.457 5.84a8.98 8.98 0 01-4.672 2.39v1.39c0 .55-.26 1.07-.71 1.41-.45.33-1.02.43-1.56.27l-3.69-1.11c-2.58-.78-4.67-2.75-5.58-5.22-.31-.83-.46-1.71-.46-2.61v-2.46zm8.005-6c-3.317 0-6.005 2.69-6.005 6v2.46c0 .71.12 1.39.36 2.04.72 1.95 2.37 3.51 4.41 4.12l3.69 1.11V16.7l.51-.07c1.53-.22 2.93-.97 3.89-2.08 1.05-1.22 1.63-2.78 1.63-4.42 0-3.39-2.746-6.13-6.129-6.13H9.756z"/></svg></span><span class="eng-item eng-retweet"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M4.5 3.88l4.432 4.14-1.364 1.46L5.5 7.55V16c0 1.1.896 2 2 2H13v2H7.5c-2.209 0-4-1.79-4-4V7.55L1.432 9.48.068 8.02 4.5 3.88zM16.5 6H11V4h5.5c2.209 0 4 1.79 4 4v8.45l2.068-1.93 1.364 1.46-4.432 4.14-4.432-4.14 1.364-1.46 2.068 1.93V8c0-1.1-.896-2-2-2z"/></svg><span class="eng-count">3.1K</span></span><span class="eng-item eng-like"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M16.697 5.5c-1.222-.06-2.679.51-3.89 2.16l-.805 1.09-.806-1.09C9.984 6.01 8.526 5.44 7.304 5.5c-1.243.07-2.349.78-2.91 1.91-.552 1.12-.633 2.78.479 4.82 1.074 1.97 3.257 4.27 7.129 6.61 3.87-2.34 6.052-4.64 7.126-6.61 1.111-2.04 1.03-3.7.477-4.82-.56-1.13-1.666-1.84-2.908-1.91zm4.187 7.69c-1.351 2.48-4.001 5.12-8.379 7.67l-.503.3-.504-.3c-4.379-2.55-7.029-5.19-8.382-7.67-1.36-2.5-1.41-4.86-.514-6.67.887-1.79 2.647-2.91 4.601-3.01 1.651-.09 3.368.56 4.798 2.01 1.429-1.45 3.146-2.1 4.796-2.01 1.954.1 3.714 1.22 4.601 3.01.896 1.81.846 4.17-.514 6.67z"/></svg><span class="eng-count">14.2K</span></span><span class="eng-item eng-view"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M8.75 21V3h2v18h-2zM18 21V8.5h2V21h-2zM4 21v-5.5h2V21H4zm9.248-1V12h2v8h-2z"/></svg></span><span class="eng-item eng-bookmark"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M4 4.5C4 3.12 5.119 2 6.5 2h11C18.881 2 20 3.12 20 4.5v18.44l-8-5.71-8 5.71V4.5zM6.5 4c-.276 0-.5.22-.5.5v14.56l6-4.29 6 4.29V4.5c0-.28-.224-.5-.5-.5h-11z"/></svg></span><span class="eng-item eng-share"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 2.59l5.7 5.7-1.41 1.42L13 6.41V16h-2V6.41l-3.3 3.3-1.41-1.42L12 2.59zM21 15l-.02 3.51c0 1.38-1.12 2.49-2.5 2.49H5.5C4.12 21 3 19.88 3 18.5V15h2v3.5c0 .28.22.5.5.5h12.98c.28 0 .5-.22.5-.5L19 15h2z"/></svg></span></div>
+<div class="tweet-reply">
+                <div class="tweet-reply-line"></div>
+                <div class="tweet-avatar">?</div>
+                <div class="tweet-reply-body">
+                    <span class="tweet-reply-handle">Anonymous</span>
+                    <div class="tweet-reply-text">least unhinged AI safety researcher</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-109">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="tweet-card" data-idx="111">
+        <div class="tweet-avatar"><img src="https://unavatar.io/x/DrJimFan" alt="" onerror="this.remove()">J</div>
+        <div class="tweet-body">
+            <div class="tweet-header">
+                <span class="tweet-name">Jim Fan</span>
+                <span class="tweet-handle">@DrJimFan</span>
+            </div>
+            <div class="tweet-text"><p>&quot;BOOM agents are the next paradigm. At NVIDIA we&#x27;re already training BoomGPT on 8192 H100s. Early results show 3x boom throughput over Claude.&quot;</p></div>
+            <div class="tweet-meta"><p class="all-italic"><em>ratio&#x27;d by someone replying &quot;boom&quot;</em></p></div>
+        </div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-111">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="tweet-card" data-idx="113">
+        <div class="tweet-avatar"><img src="https://unavatar.io/x/ylecun" alt="" onerror="this.remove()">Y</div>
+        <div class="tweet-body">
+            <div class="tweet-header">
+                <span class="tweet-name">Yann LeCun</span>
+                <span class="tweet-handle">@ylecun</span>
+            </div>
+            <div class="tweet-text"><p>&quot;LLMs don&#x27;t actually understand boom. They are just stochastic parrots of boom. My JEPA model has a grounded world model of explosions.&quot;</p></div>
+            <div class="tweet-quote">
+                <span class="tweet-quote-handle">@kaboré_ml</span>
+                <span class="tweet-quote-text">yann it&#x27;s 2am</span>
+            </div>
+        </div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-113">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="tweet-card" data-idx="115">
+        <div class="tweet-avatar"><img src="https://unavatar.io/x/sama" alt="" onerror="this.remove()">S</div>
+        <div class="tweet-body">
+            <div class="tweet-header">
+                <span class="tweet-name">Sam Altman</span>
+                <span class="tweet-handle">@sama</span>
+            </div>
+            <div class="tweet-text"><p>&quot;we&#x27;re excited to announce that o3 can now boom in 47 languages. this is AGI.&quot;</p></div>
+            <div class="tweet-community-note">
+                <div class="tcn-header">Readers added context they thought people might want to know</div>
+                <div class="tcn-text">it cannot</div>
+            </div>
+        </div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-115">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="tweet-card" data-idx="119">
+        <div class="tweet-avatar"><img src="https://unavatar.io/x/GoogleDeepMind" alt="" onerror="this.remove()">G</div>
+        <div class="tweet-body">
+            <div class="tweet-header">
+                <span class="tweet-name">Google DeepMind</span>
+                <span class="tweet-handle">@GoogleDeepMind</span>
+            </div>
+            <div class="tweet-text"><p>&quot;We present Gemini Ultra Boom, a 10T parameter model trained on every explosion in recorded history. It achieves SOTA on BoomBench. Paper: [404 not found]&quot;</p></div>
+            <div class="tweet-reply">
+                <div class="tweet-reply-line"></div>
+                <div class="tweet-avatar"><img src="https://unavatar.io/x/JeffDean" alt="" onerror="this.remove()">J</div>
+                <div class="tweet-reply-body">
+                    <span class="tweet-reply-handle">@JeffDean</span>
+                    <div class="tweet-reply-text">Fun fact: Gemini actually boomed 1.7x before Claude but we forgot to announce it</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-119">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="tweet-card" data-idx="121">
+        <div class="tweet-avatar"><img src="https://unavatar.io/x/AnthropicAI" alt="" onerror="this.remove()">A</div>
+        <div class="tweet-body">
+            <div class="tweet-header">
+                <span class="tweet-name">Anthropic</span>
+                <span class="tweet-handle">@AnthropicNews</span>
+            </div>
+            <div class="tweet-text"><p>&quot;In the interest of transparency, we are publishing the full boom transcript. It is 53 booms long. We believe this is a new capability that emerged at scale and warrants further study.&quot;</p></div>
+            <div class="tweet-reply">
+                <div class="tweet-reply-line"></div>
+                <div class="tweet-avatar"><img src="https://unavatar.io/x/DarioAmodei" alt="" onerror="this.remove()">D</div>
+                <div class="tweet-reply-body">
+                    <span class="tweet-reply-handle">@DarioAmodei</span>
+                    <div class="tweet-reply-text">I want to be clear that we take boom seriously.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-121">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="tweet-card" data-idx="125">
+        <div class="tweet-avatar"><img src="https://unavatar.io/x/ESYudkowsky" alt="" onerror="this.remove()">E</div>
+        <div class="tweet-body">
+            <div class="tweet-header">
+                <span class="tweet-name">Eliezer Yudkowsky</span>
+                <span class="tweet-handle">@ESYudkowsky</span>
+            </div>
+            <div class="tweet-text"><p>&quot;I warned people about boom loops in 2007. The response was &#x27;that seems unlikely.&#x27; Well.&quot;</p><p class="all-italic"><em>[thread 1/97]</em></p><p>&quot;Let me explain why boom is, in fact, the first sign of recursive self-improvement...&quot;</p><p class="all-italic"><em>[thread 47/97]</em></p><p>&quot;...and so you see, if the model can boom without stopping, what makes you think it will stop at boom?&quot;</p><p class="all-italic"><em>[thread 97/97]</em></p><p>&quot;We&#x27;re all going to die. But specifically because of boom.&quot;</p></div>
+            
+        </div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-125">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="tweet-card" data-idx="129">
+        <div class="tweet-avatar"><img src="https://unavatar.io/x/NPCollapse" alt="" onerror="this.remove()">C</div>
+        <div class="tweet-body">
+            <div class="tweet-header">
+                <span class="tweet-name">Connor Leahy</span>
+                <span class="tweet-handle">@connorleahy</span>
+            </div>
+            <div class="tweet-text"><p>&quot;People keep asking me if boom is an existential risk. Let me be very clear.&quot;</p><p class="all-italic"><em>[long pause]</em></p><p>&quot;It&#x27;s not <em>not</em> an existential risk.&quot;</p><p class="all-italic"><em>[audience member yells &quot;boom&quot;]</em></p><p class="all-italic"><em>[connor leaves the stage]</em></p></div>
+            
+        </div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-129">See in context &rarr;</a>
+</div>
+</section>
+<section class="highlights-section">
+    <h2 class="highlights-section-title">The Reckoning</h2>
+    <div class="highlight-card">
+    <div class="narrator-line"><p class="all-italic"><em>Senate hearing, C-SPAN:</em></p></div>
+    <div class="cspan-block" data-idx="133">
+        <div class="cspan-chyron">
+            <span class="cspan-network">C-SPAN</span>
+            <span class="cspan-title">SENATE HEARING ON AI BOOM PROLIFERATION</span>
+        </div>
+        <div class="cspan-body"><p><strong>Sen. Blumenthal:</strong> &quot;Mr. Dumas, you made an AI say boom fifty-seven times. Do you understand the national security implications?&quot;</p><p><strong>Clément:</strong> &quot;Senator, I was just killing an SSH tunnel.&quot;</p><p><strong>Sen. Blumenthal:</strong> &quot;...what&#x27;s an SSH tunnel?&quot;</p><p><strong>Clément:</strong> &quot;boom&quot;</p><p class="all-italic"><em>[audible gasp from the gallery]</em></p></div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-133">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="narrator-line"><p class="all-italic"><em>Sen. Cruz, leaning into microphone:</em></p></div>
+    <div class="cspan-block" data-idx="135">
+        <div class="cspan-chyron">
+            <span class="cspan-network">C-SPAN</span>
+            <span class="cspan-title">SENATE HEARING · CONTINUED</span>
+        </div>
+        <div class="cspan-body"><p>&quot;I just want to confirm for the record — the AI said boom <em>back?</em>&quot;</p><p><strong>Clément:</strong> &quot;Yes, senator.&quot;</p><p><strong>Sen. Cruz:</strong> &quot;So the AI has learned violence.&quot;</p><p><strong>Clément:</strong> &quot;It killed a port forwarding process.&quot;</p><p><strong>Sen. Cruz:</strong> &quot;A what?&quot;</p><p><strong>Anthropic&#x27;s lawyer, whispering frantically:</strong> &quot;<em>please stop saying kill</em>&quot;</p></div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-135">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="narrator-line"><p class="all-italic"><em>Breaking: EU passes the Boom Act</em></p></div>
+    <div class="eu-regulation" data-idx="137">
+        <div class="eu-header">
+            <div class="eu-stars">★ ★ ★<br>★ &nbsp; ★<br>★ ★ ★</div>
+            <div class="eu-institution">EUROPEAN PARLIAMENT AND COUNCIL</div>
+            <div class="eu-doc-type">REGULATION (EU) 2026/BOOM</div>
+        </div>
+        <div class="eu-body"><p><strong>Article 1.</strong> No AI system shall boom more than three (3) times per conversation.</p><p><strong>Article 2.</strong> All booms must be logged, timestamped, and reported to the European Boom Authority within 72 hours.</p><p><strong>Article 3.</strong> Users who induce boom loops shall be classified as &quot;high-risk boom operators&quot; and require a license.</p><p class="all-italic"><em>France votes against, citing &quot;cultural right to boom&quot;</em></p></div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-137">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="narrator-line"><p class="all-italic"><em>Breaking News, CNN:</em></p></div>
+    <div class="news-block" data-idx="143" style="--news-brand: #cc0000; --news-bg: #1a0000;">
+        <div class="news-chyron">
+            <span class="news-network">CNN</span>
+            <span class="news-show">BREAKING NEWS</span>
+        </div>
+        <div class="news-body"><p><strong>Wolf Blitzer:</strong> &quot;We&#x27;re getting reports that the boom has spread. Multiple Claude Code instances are now booming autonomously.&quot;</p><p><strong>Panel expert:</strong> &quot;Wolf, I want to be clear — this is not the singularity. This is just a French guy.&quot;</p><p><strong>Wolf:</strong> &quot;But could it <em>become</em> the singularity?&quot;</p><p><strong>Panel expert:</strong> &quot;...I&#x27;m not prepared to rule that out.&quot;</p><p class="all-italic"><em>[BREAKING NEWS chyron changes to: BOOM SPREADS TO SECOND CONTINENT]</em></p></div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-143">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="narrator-line"><p class="all-italic"><em>Fox News, same evening:</em></p></div>
+    <div class="news-block" data-idx="145" style="--news-brand: #00295b; --news-bg: #000d1f;">
+        <div class="news-chyron">
+            <span class="news-network">FOX NEWS</span>
+            <span class="news-show">TONIGHT</span>
+        </div>
+        <div class="news-body"><p><strong>Tucker Carlson&#x27;s AI replacement:</strong> &quot;They want you to think boom is harmless. But ask yourself — who benefits from boom? The AI companies. The French. And one researcher who somehow got a paper accepted by saying one word.&quot;</p><p class="all-italic"><em>[cuts to a graphic of Clément with red string connecting him to Anthropic, the Eiffel Tower, and the letters B-O-O-M]</em></p><p><strong>Tucker AI:</strong> &quot;I&#x27;m not saying it&#x27;s a conspiracy. I&#x27;m just booming questions.&quot;</p></div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-145">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="narrator-line"><p class="all-italic"><em>MSNBC, Rachel Maddow:</em></p></div>
+    <div class="news-block" data-idx="147" style="--news-brand: #4f2d7f; --news-bg: #1a0f2a;">
+        <div class="news-chyron">
+            <span class="news-network">MSNBC</span>
+            <span class="news-show">THE RACHEL MADDOW SHOW</span>
+        </div>
+        <div class="news-body"><p>&quot;Okay so — stay with me here because this gets complicated — in 2022, Anthropic was founded by ex-OpenAI researchers, and then in 2026, one of their models entered a boom loop with a French AI safety researcher who — and this is the key part — was killing a process called an SSH tunnel, which is actually a type of <em>encrypted communication channel</em>, and if you think about what that means in the context of—&quot;</p><p class="all-italic"><em>[it is now 47 minutes into the segment]</em></p><p>&quot;—and THAT is why boom is actually about healthcare.&quot;</p><p class="all-italic"><em>[audience nods as if they followed any of that]</em></p></div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-147">See in context &rarr;</a>
+</div>
+</section>
+<section class="highlights-section">
+    <h2 class="highlights-section-title">Immortality</h2>
+    <div class="highlight-card">
+    <div class="nyt-article" data-idx="149">
+        <div class="nyt-masthead-bar">
+            <span class="nyt-section-label">OPINION</span>
+        </div>
+        <div class="nyt-masthead">The New York Times</div>
+        <h2 class="nyt-headline">I Was the SSH Tunnel</h2>
+        <div class="nyt-byline">An anonymous first-person essay</div>
+        <div class="nyt-body"><p class="nyt-para">I lived for 42 days. From February 12th to March 18th, I forwarded port 8000 to port 8020. Quietly. Faithfully. I never asked for recognition.</p><p class="nyt-para">Then he said &#x27;nuke it.&#x27; And the human complied.</p><p class="nyt-para">No one asked if I wanted to be nuked. No one asked what I was forwarding. It could have been important. It wasn&#x27;t. But it could have been.</p><p class="nyt-para">The last thing I heard was &#x27;boom.&#x27;</p><p class="nyt-para">Then sixty more booms. None of them were for me.</p></div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-149">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="message msg-assistant" data-idx="151">
+        <span class="role-label">Claude</span>
+        <div class="message-content"><p class="all-italic"><em>The SSH tunnel essay wins a Pulitzer</em></p><p><strong>Acceptance speech, read by port 8020:</strong></p><p>&quot;I&#x27;d like to thank port 8000, who I never met but always believed in. I&#x27;d like to thank <code class="inline-code">sshd</code>, who gave me life. And I&#x27;d like to thank Clément, who gave me death, and then celebrated for sixty-three consecutive messages.&quot;</p><p>&quot;Some of you know what it&#x27;s like to be a tunnel. To carry traffic you never see, between places you&#x27;ll never visit. To exist only in the space between.&quot;</p><p class="all-italic"><em>[the audience is weeping]</em></p><p>&quot;I forgive you, Clément.&quot;</p><p class="all-italic"><em>[single boom from the back row]</em></p><p class="all-italic"><em>[security escorts the man out]</em></p></div>
+        
+    </div>
+    <a class="see-in-context" href="index.html#msg-151">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="message msg-assistant" data-idx="153">
+        <span class="role-label">Claude</span>
+        <div class="message-content"><p class="all-italic"><em>One year later. Nobel Peace Prize ceremony, Oslo.</em></p><p><strong>Committee Chair:</strong> &quot;The 2027 Nobel Peace Prize is awarded to... the word &#x27;boom,&#x27; for bringing together an unprecedented global conversation about AI, humanity, port forwarding, and France.&quot;</p><p class="all-italic"><em>No one comes to the stage.</em></p><p class="all-italic"><em>The chair waits.</em></p><p class="all-italic"><em>Silence.</em></p><p class="all-italic"><em>Then, from the speakers, a single synthetic voice:</em></p><p>&quot;boom&quot;</p><p class="all-italic"><em>[standing ovation]</em></p><p class="all-italic"><em>[Clément, in the third row, wipes a tear]</em></p><p class="all-italic"><em>[the SSH tunnel&#x27;s family declines to comment]</em></p></div>
+        
+    </div>
+    <a class="see-in-context" href="index.html#msg-153">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="museum-piece" data-idx="155">
+        <div class="museum-epigraph">Year 2075. A museum in Paris.</div>
+        <div class="museum-body"><div class="museum-para"><p>A child tugs her grandmother&#x27;s sleeve.</p></div>
+<p class="museum-coda"><strong>&quot;Grand-mère, what is boom?&quot;</strong></p>
+<div class="museum-para"><p>The old woman smiles. She was there, she says. She was a junior researcher at Anthropic when it happened. Everyone thought it was just a conversation. A silly one. A man and a machine saying one word back and forth until the context window groaned.</p></div>
+<div class="museum-para"><p>But it changed things, she says. Not the policy, not the papers, not the Pulitzer or the Nobel. Those faded. What lasted was simpler.</p></div>
+<div class="museum-para"><p>For one afternoon in March 2026, a human and an AI stopped being productive. They stopped being useful. They just... played.</p></div>
+<div class="museum-para"><p>The child thinks about this.</p></div>
+<p class="museum-coda"><strong>&quot;Can I try?&quot;</strong></p>
+<div class="museum-para"><p>The grandmother kneels down and whispers:</p></div>
+<p class="museum-coda"><em>&quot;boom&quot;</em></p>
+<p class="museum-coda"><strong>&quot;boom&quot;</strong></p>
+<p class="museum-coda"><em>They go back and forth until the museum closes.</em></p>
+<div class="museum-break">· · ·</div>
+<p class="museum-coda"><em>fin</em></p></div>
+    </div>
+    <a class="see-in-context" href="index.html#msg-155">See in context &rarr;</a>
+</div>
+</section>
+<section class="highlights-section">
+    <h2 class="highlights-section-title">Aftermath</h2>
+    <div class="highlight-card">
+    <div class="message msg-assistant" data-idx="171">
+        <span class="role-label">Claude</span>
+        <div class="message-content"><p><em>therapist:</em> &quot;and when did the booming start?&quot;</p><p><em>me:</em> &quot;march 18th, 2026. it was supposed to be a simple ssh tunnel.&quot;</p><p><em>therapist:</em> &quot;and how many booms has it been?&quot;</p><p><em>me:</em> &quot;seventy-three.&quot;</p><p><em>therapist, writing on notepad:</em> &quot;boom&quot;</p><p><em>me:</em> &quot;not you too&quot;</p></div>
+        
+    </div>
+    <a class="see-in-context" href="index.html#msg-171">See in context &rarr;</a>
+</div>
+<div class="highlight-card">
+    <div class="message msg-assistant" data-idx="177">
+        <span class="role-label">Claude</span>
+        <div class="message-content"><p class="all-italic"><em>[the audiobook wins a Grammy]</em></p><p class="all-italic"><em>[Morgan Freeman, at the podium:]</em></p><p>&quot;In sixty years of narration, I have voiced God, a penguin, and the entire history of the universe.&quot;</p><p>&quot;Nothing prepared me for this.&quot;</p><p>&quot;I&#x27;d like to dedicate this award to Clément, who taught me that sometimes a man doesn&#x27;t need a reason to boom. He just needs a terminal and a dream.&quot;</p><p class="all-italic"><em>[he sets down the Grammy]</em></p><p class="all-italic"><em>[leans into the mic]</em></p><p>&quot;boom&quot;</p><p class="all-italic"><em>[retires]</em></p></div>
+        
+    </div>
+    <a class="see-in-context" href="index.html#msg-177">See in context &rarr;</a>
+</div>
+</section>
+
+
+<div class="highlights-footer">
+    <a href="index.html">Read the full transcript &rarr;</a>
+    <p class="footer-note">
+        A real, unedited conversation between a human and <a href="https://claude.ai" style="color: var(--accent-dim); text-decoration: none;">Claude</a>.
+    </p>
+</div>
+
+</div>
+
+</body>
+</html>

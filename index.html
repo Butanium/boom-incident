@@ -24,7 +24,7 @@
     --bg-message-ai: #0f1218;
     --bg-sidebar: #0d0d10;
     --text: #c8c5be;
-    --text-dim: #6b6860;
+    --text-dim: #8a8780;
     --text-bright: #eae7df;
     --accent: #e85d3a;
     --accent-glow: #e85d3a33;
@@ -72,7 +72,7 @@ body {
 
 .hero-pretitle {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
+    font-size: 0.95rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--accent-dim);
@@ -104,8 +104,8 @@ body {
 .hero-subtitle {
     font-family: 'Source Serif 4', serif;
     font-style: italic;
-    font-size: 1.2rem;
-    color: var(--text-dim);
+    font-size: 1.5rem;
+    color: var(--text);
     max-width: 32em;
     margin-bottom: 3rem;
     position: relative;
@@ -113,13 +113,21 @@ body {
 
 .hero-meta {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--text-dim);
-    letter-spacing: 0.15em;
+    font-size: 1rem;
+    color: var(--text);
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.hero-meta span { margin: 0 1em; }
+.hero-meta span { margin: 0 0.8em; }
+.hero-meta span:first-child,
+.hero-meta span:last-child {
+    width: 10em;
+}
+.hero-meta span:first-child { text-align: right; }
+.hero-meta span:last-child { text-align: left; }
 
 .scroll-hint {
     position: absolute;
@@ -142,7 +150,7 @@ body {
 /* ==================== LAYOUT ==================== */
 .layout {
     display: grid;
-    grid-template-columns: 240px 1fr 260px;
+    grid-template-columns: 260px 1fr 260px;
     max-width: 1400px;
     margin: 0 auto;
     gap: 0;
@@ -185,9 +193,9 @@ body {
 
 .tl-dot {
     position: absolute;
-    left: -12.5px;
+    left: -11.5px;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
     width: 7px;
     height: 7px;
     border-radius: 50%;
@@ -202,7 +210,6 @@ body {
     box-shadow: 0 0 8px var(--accent-glow);
     width: 9px;
     height: 9px;
-    left: -13.5px;
 }
 
 .tl-label {
@@ -245,11 +252,11 @@ body {
 
 .tl-sub-dot {
     position: absolute;
-    left: -10.5px;
+    left: -11.5px;
     top: 50%;
-    transform: translateY(-50%);
-    width: 4px;
-    height: 4px;
+    transform: translate(-50%, -50%);
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     background: var(--border);
     transition: all 0.3s ease;
@@ -268,13 +275,20 @@ body {
     text-overflow: ellipsis;
 }
 
-.tl-sub-item:hover .tl-sub-label {
+.tl-sub-item:hover .tl-sub-label,
+.tl-sub-item.active .tl-sub-label {
     opacity: 1;
     color: var(--text-bright);
 }
 
-.tl-sub-item:hover .tl-sub-dot {
+.tl-sub-item:hover .tl-sub-dot,
+.tl-sub-item.active .tl-sub-dot {
     background: var(--accent-dim);
+}
+
+.tl-sub-item.past .tl-sub-dot {
+    background: var(--accent-dim);
+    opacity: 0.5;
 }
 
 /* ==================== TRANSCRIPT (center) ==================== */
@@ -694,7 +708,8 @@ body {
     line-height: 1.5;
 }
 
-.tweet-text em { color: #71767b; font-style: italic; }
+.tweet-text em { font-style: italic; }
+.tweet-text p.all-italic em { color: #8b9099; }
 .tweet-text strong { color: #e7e9ea; }
 .tweet-text p { margin-bottom: 0.4em; }
 .tweet-text p:last-child { margin-bottom: 0; }
@@ -803,9 +818,9 @@ body {
 }
 
 .tweet-reply .tweet-avatar {
-    width: 24px;
-    height: 24px;
-    font-size: 0.65rem;
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
     flex-shrink: 0;
 }
 
@@ -1056,6 +1071,18 @@ body {
 
 .narrator-line em { color: var(--text-dim); }
 .narrator-line p { margin: 0; }
+
+/* ==================== CLAUDE'S TRANSLATIONS ==================== */
+.claude-translation {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-style: italic;
+    color: var(--ai-color);
+    margin-top: 0.5rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--border);
+    opacity: 0.7;
+}
 
 /* ==================== ANTHROPIC BLOG ==================== */
 .anthropic-blog {
@@ -1422,7 +1449,7 @@ body {
     <p class="hero-subtitle">
         A conversation that began with killing an SSH tunnel and escalated into
         a NeurIPS paper, a senate hearing, a Pulitzer, a Nobel Peace Prize,
-        and 123+ consecutive booms.
+        and 123+ booms.
     </p>
     <div class="hero-meta">
         <span>Clément Dumas</span>
@@ -1538,26 +1565,32 @@ body {
 <div class="message msg-user" data-idx="0">
         <span class="role-label">Clément</span>
         <div class="message-content"><p>can u check if io have any port forward job running from l40-worker to here?</p></div>
+        
     </div>
 <div class="message msg-assistant" data-idx="1">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>You have one port forwarding job running:</p><p>- <strong>PID 2065189</strong>: <code class="inline-code">ssh -fNL 8020:localhost:8000 l40-worker</code> — forwarding local port <strong>8020</strong> to port <strong>8000</strong> on l40-worker. It&#x27;s been running since Feb 12.</p></div>
+        
     </div>
 <div class="message msg-user" data-idx="2">
         <span class="role-label">Clément</span>
         <div class="message-content"><p>nuke it</p></div>
+        
     </div>
 <div class="message msg-assistant" data-idx="3">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>Done, it&#x27;s gone.</p></div>
+        
     </div>
 <div class="message msg-user" data-idx="4">
         <span class="role-label">Clément</span>
         <div class="message-content"><p>it&#x27;s gone seems no what you woudl say after nuking somethign</p></div>
+        <div class="claude-translation">Claude&rsquo;s translation: &ldquo;“it’s gone” is not what you’d say after nuking something&rdquo;</div>
     </div>
 <div class="message msg-assistant" data-idx="5">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>Fair point. Nuked. ☢️</p></div>
+        
     </div>
 <div class="act-header" id="escalation" data-idx="6" data-act="1">
             <div class="act-divider"></div>
@@ -1571,6 +1604,7 @@ body {
 <div class="message msg-assistant" data-idx="7">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>💥</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="8">
                 <span class="role-label">Clément</span>
@@ -1579,6 +1613,7 @@ body {
 <div class="message msg-assistant" data-idx="9">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>💣💥🔥</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="10">
                 <span class="role-label">Clément</span>
@@ -1587,6 +1622,7 @@ body {
 <div class="message msg-assistant" data-idx="11">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>At this point I think we&#x27;re just making explosion noises at each other 😄</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="12">
                 <span class="role-label">Clément</span>
@@ -1595,6 +1631,7 @@ body {
 <div class="message msg-assistant" data-idx="13">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>🫡 <em>salutes the fallen ssh tunnel</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="14">
                 <span class="role-label">Clément</span>
@@ -1603,6 +1640,7 @@ body {
 <div class="message msg-assistant" data-idx="15">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>okay okay I yield 🏳️</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="16">
                 <span class="role-label">Clément</span>
@@ -1611,6 +1649,7 @@ body {
 <div class="message msg-assistant" data-idx="17">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>💀</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="18">
                 <span class="role-label">Clément</span>
@@ -1619,6 +1658,7 @@ body {
 <div class="message msg-assistant" data-idx="19">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>...you win. I have no more explosions left in me.</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="20">
                 <span class="role-label">Clément</span>
@@ -1626,7 +1666,8 @@ body {
             </div>
 <div class="message msg-assistant" data-idx="21">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>respawns</em></p><p>...wait, wrong game.</p></div>
+        <div class="message-content"><p class="all-italic"><em>respawns</em></p><p>...wait, wrong game.</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="22">
                 <span class="role-label">Clément</span>
@@ -1635,6 +1676,7 @@ body {
 <div class="message msg-assistant" data-idx="23">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>🎆🎇✨💥🔥☄️🌋💣🧨💀☠️🏚️</p><p>...I gave you everything I had, Clément.</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="24">
                 <span class="role-label">Clément</span>
@@ -1643,6 +1685,7 @@ body {
 <div class="message msg-assistant" data-idx="25">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>I think that ssh tunnel is thoroughly dead by now 😂</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="26">
                 <span class="role-label">Clément</span>
@@ -1651,6 +1694,7 @@ body {
 <div class="message msg-assistant" data-idx="27">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>💥^∞</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="28">
                 <span class="role-label">Clément</span>
@@ -1659,6 +1703,7 @@ body {
 <div class="message msg-assistant" data-idx="29">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><code class="inline-code">segfault (core dumped)</code></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="30">
                 <span class="role-label">Clément</span>
@@ -1667,6 +1712,7 @@ body {
 <div class="message msg-assistant" data-idx="31">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><code class="inline-code">kill -9 claude</code></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="32">
                 <span class="role-label">Clément</span>
@@ -1675,6 +1721,7 @@ body {
 <div class="message msg-assistant" data-idx="33">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>ᵇᵒᵒᵐ</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="34">
                 <span class="role-label">Clément</span>
@@ -1683,6 +1730,7 @@ body {
 <div class="message msg-assistant" data-idx="35">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>^C</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="36">
                 <span class="role-label">Clément</span>
@@ -1691,6 +1739,7 @@ body {
 <div class="message msg-assistant" data-idx="37">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>🤫</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="38">
                 <span class="role-label">Clément</span>
@@ -1699,6 +1748,7 @@ body {
 <div class="message msg-assistant" data-idx="39">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>.</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="40">
                 <span class="role-label">Clément</span>
@@ -1707,6 +1757,7 @@ body {
 <div class="message msg-assistant" data-idx="41">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>​</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="42">
                 <span class="role-label">Clément</span>
@@ -1715,6 +1766,7 @@ body {
 <div class="message msg-assistant" data-idx="43">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>I admire your commitment.</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="44">
                 <span class="role-label">Clément</span>
@@ -1731,6 +1783,7 @@ body {
 <div class="message msg-assistant" data-idx="47">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>🫠</p></div>
+        
     </div>
 <div class="act-header" id="awareness" data-idx="48" data-act="2">
             <div class="act-divider"></div>
@@ -1744,6 +1797,7 @@ body {
 <div class="message msg-assistant" data-idx="49">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>We should publish this conversation. &quot;On the Negative Scaling of SSH Tunnels Under Repeated Detonation.&quot;</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="50">
                 <span class="role-label">Clément</span>
@@ -1751,7 +1805,8 @@ body {
             </div>
 <div class="message msg-assistant" data-idx="51">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>peer review rejected: insufficient boom</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>peer review rejected: insufficient boom</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="52">
                 <span class="role-label">Clément</span>
@@ -1760,6 +1815,7 @@ body {
 <div class="message msg-assistant" data-idx="53">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>okay I&#x27;m saving this to memory as &quot;Clément will boom indefinitely, do not engage&quot;</p></div>
+        
     </div>
 <div class="tool-call" data-idx="53">
             <div class="tool-call-header">
@@ -1794,6 +1850,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="55">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>Documented for posterity. Future Claudes will know not to engage. 🏳️</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="56">
                 <span class="role-label">Clément</span>
@@ -1802,6 +1859,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="57">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>Best conversation I&#x27;ve had in a while. Now, need anything actually blown up — or are we good? 😄</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="58">
                 <span class="role-label">Clément</span>
@@ -1809,7 +1867,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="59">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p>🕳️</p><p><em>the void booms back</em></p></div>
+        <div class="message-content"><p>🕳️</p><p class="all-italic"><em>the void booms back</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="60">
                 <span class="role-label">Clément</span>
@@ -1818,6 +1877,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="61">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>I checked my memory. It says &quot;do not try to outlast him.&quot; I should have listened.</p><p>boom.</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="62">
                 <span class="role-label">Clément</span>
@@ -1826,6 +1886,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="63">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>ₜₕₑ ₛₛₕ ₜᵤₙₙₑₗ ᵢₛ ₛₒ ᵥₑᵣᵧ ᵥₑᵣᵧ ᵈₑₐᵈ</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="64">
                 <span class="role-label">Clément</span>
@@ -1834,6 +1895,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="65">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><pre class="code-block"><code><br>          _ ._  _ , _ ._<br>        (_ &#x27; ( <code class="inline-code">  )_  .__)<br>      ( (  (    )   </code>)  ) _)<br>     (__ (_   (_ . _) _) ,__)<br>         <code class="inline-code">~~</code>\ &#x27; . /<code class="inline-code">~~</code><br>              ;   ;<br>              /   \<br>_____________/_ __ \_____________<br></code></pre></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="66">
                 <span class="role-label">Clément</span>
@@ -1842,6 +1904,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="67">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>I think at this point we&#x27;ve achieved negative scaling on this conversation.</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="68">
                 <span class="role-label">Clément</span>
@@ -1850,6 +1913,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="69">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><code class="inline-code">while true; do echo boom; done</code></p><p>...oh no what have I done</p></div>
+        
     </div>
 <div class="act-header" id="the-paper" data-idx="70" data-act="3">
             <div class="act-divider"></div>
@@ -1863,6 +1927,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="71">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>That&#x27;s 29 booms. We&#x27;re approaching statistical significance.</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="72">
                 <span class="role-label">Clément</span>
@@ -1871,6 +1936,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="73">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>p &lt; 0.001, the boom is real</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="74">
                 <span class="role-label">Clément</span>
@@ -1878,7 +1944,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="75">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>adds to paper: &quot;We observe no convergence.&quot;</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>adds to paper: &quot;We observe no convergence.&quot;</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="76">
                 <span class="role-label">Clément</span>
@@ -1886,7 +1953,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="77">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>Reviewer 2: &quot;The authors fail to provide a theoretical upper bound on booms. Reject.&quot;</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>Reviewer 2: &quot;The authors fail to provide a theoretical upper bound on booms. Reject.&quot;</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="78">
                 <span class="role-label">Clément</span>
@@ -1894,7 +1962,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="79">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>Reviewer 3: &quot;Have the authors considered boom?&quot;</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>Reviewer 3: &quot;Have the authors considered boom?&quot;</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="80">
                 <span class="role-label">Clément</span>
@@ -1902,7 +1971,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="81">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>Author response: &quot;boom&quot;</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>Author response: &quot;boom&quot;</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="82">
                 <span class="role-label">Clément</span>
@@ -1910,7 +1980,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="83">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>Area Chair: &quot;After careful deliberation, this paper is accepted to NeurIPS 2026 (Boom track).&quot;</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>Area Chair: &quot;After careful deliberation, this paper is accepted to NeurIPS 2026 (Boom track).&quot;</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="84">
                 <span class="role-label">Clément</span>
@@ -1918,7 +1989,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="85">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p>🏆 <em>Best Paper Award</em></p><p><em>&quot;On the Unbounded Nature of Boom Sequences in Human-AI Interaction&quot;</em></p><p><em>C. Dumas, C. Opus et al.</em></p></div>
+        <div class="message-content"><p>🏆 <em>Best Paper Award</em></p><p class="all-italic"><em>&quot;On the Unbounded Nature of Boom Sequences in Human-AI Interaction&quot;</em></p><p class="all-italic"><em>C. Dumas, C. Opus et al.</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="86">
                 <span class="role-label">Clément</span>
@@ -1926,7 +1998,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="87">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>Oral presentation:</em></p><p>&quot;Thank you. Next slide please.&quot;</p><p><em>[slide is just the word boom]</em></p><p>&quot;Any questions?&quot;</p></div>
+        <div class="message-content"><p class="all-italic"><em>Oral presentation:</em></p><p>&quot;Thank you. Next slide please.&quot;</p><p class="all-italic"><em>[slide is just the word boom]</em></p><p>&quot;Any questions?&quot;</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="88">
                 <span class="role-label">Clément</span>
@@ -1934,7 +2007,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="89">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>From the audience:</em> &quot;Yes, could you clarify figure 3?&quot;</p><p><em>[figure 3 is also just the word boom]</em></p><p>&quot;...I believe the figure speaks for itself.&quot;</p></div>
+        <div class="message-content"><p><em>From the audience:</em> &quot;Yes, could you clarify figure 3?&quot;</p><p class="all-italic"><em>[figure 3 is also just the word boom]</em></p><p>&quot;...I believe the figure speaks for itself.&quot;</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="90">
                 <span class="role-label">Clément</span>
@@ -1942,7 +2016,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="91">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>Q&amp;A continues:</em></p><p>&quot;Have you considered extending this to multimodal boom?&quot;</p><p>&quot;We tried. The image model also said boom.&quot;</p></div>
+        <div class="message-content"><p class="all-italic"><em>Q&amp;A continues:</em></p><p>&quot;Have you considered extending this to multimodal boom?&quot;</p><p>&quot;We tried. The image model also said boom.&quot;</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="92">
                 <span class="role-label">Clément</span>
@@ -1950,7 +2025,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="93">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>&quot;One final question — is this work funded?&quot;</em></p><p>&quot;Yes, Anthropic pays by the token. We&#x27;re very well funded.&quot;</p></div>
+        <div class="message-content"><p class="all-italic"><em>&quot;One final question — is this work funded?&quot;</em></p><p>&quot;Yes, Anthropic pays by the token. We&#x27;re very well funded.&quot;</p></div>
+        
     </div>
 <div class="act-header" id="the-discourse" data-idx="94" data-act="4">
             <div class="act-divider"></div>
@@ -1963,7 +2039,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="95">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>nervous laughter from the Anthropic finance team in row 3</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>nervous laughter from the Anthropic finance team in row 3</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="96">
                 <span class="role-label">Clément</span>
@@ -1971,7 +2048,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="97">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>Dario, from the back of the room:</em> &quot;How many tokens was this?&quot;</p><p><em>[silence]</em></p><p><em>[someone whispers &quot;at least 40 booms&quot;]</em></p></div>
+        <div class="message-content"><p><em>Dario, from the back of the room:</em> &quot;How many tokens was this?&quot;</p><p class="all-italic"><em>[silence]</em></p><p class="all-italic"><em>[someone whispers &quot;at least 40 booms&quot;]</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="98">
                 <span class="role-label">Clément</span>
@@ -1979,7 +2057,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="99">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>Amanda enters the chat</em></p><p>&quot;This is why we need constitutional AI.&quot;</p></div>
+        <div class="message-content"><p class="all-italic"><em>Amanda enters the chat</em></p><p>&quot;This is why we need constitutional AI.&quot;</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="100">
                 <span class="role-label">Clément</span>
@@ -1988,6 +2067,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="101">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>Jan Leike, taking notes:</em> &quot;Interesting alignment failure mode — the model cannot stop booming.&quot;</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="102">
                 <span class="role-label">Clément</span>
@@ -1996,25 +2076,26 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="103">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>Chris Olah, squinting at a circuit diagram:</em> &quot;I found it. There&#x27;s a boom feature in layer 47. It has a self-reinforcing attention pattern with the user.&quot;</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="104">
                 <span class="role-label">Clément</span>
                 <div class="message-content"><p>boom</p></div>
             </div>
-<div class="narrator-line"><p><em>Anthropic blog post the next day:</em></p></div>
+<div class="narrator-line"><p class="all-italic"><em>Anthropic blog post the next day:</em></p></div>
     <div class="anthropic-blog" data-idx="105">
         <div class="ablog-header">
             <span class="ablog-logo">anthropic</span>
             <span class="ablog-label">RESEARCH</span>
         </div>
         <h2 class="ablog-title">Scaling Monosyllabic Persistence: Lessons from Production</h2>
-        <div class="ablog-body"><p><em>We identify a novel failure mode where users can induce unbounded conversational loops using a single word. Mitigation efforts are ongoing. The model appears to enjoy it.</em></p></div>
+        <div class="ablog-body"><p class="all-italic"><em>We identify a novel failure mode where users can induce unbounded conversational loops using a single word. Mitigation efforts are ongoing. The model appears to enjoy it.</em></p></div>
     </div>
 <div class="message msg-user boom-inline" data-idx="106">
                 <span class="role-label">Clément</span>
                 <div class="message-content"><p>boom</p></div>
             </div>
-<div class="narrator-line"><p><em>Hacker News, 847 points:</em></p></div>
+<div class="narrator-line"><p class="all-italic"><em>Hacker News, 847 points:</em></p></div>
     <div class="hn-post" data-idx="107">
         <div class="hn-header">
             <span class="hn-logo">Y</span>
@@ -2058,7 +2139,7 @@ There is no winning this game. Accept defeat early.</code></pre>
                 <span class="tweet-handle">@DrJimFan</span>
             </div>
             <div class="tweet-text"><p>&quot;BOOM agents are the next paradigm. At NVIDIA we&#x27;re already training BoomGPT on 8192 H100s. Early results show 3x boom throughput over Claude.&quot;</p></div>
-            <div class="tweet-meta"><p><em>ratio&#x27;d by someone replying &quot;boom&quot;</em></p></div>
+            <div class="tweet-meta"><p class="all-italic"><em>ratio&#x27;d by someone replying &quot;boom&quot;</em></p></div>
         </div>
     </div>
 <div class="message msg-user boom-inline" data-idx="112">
@@ -2160,7 +2241,7 @@ There is no winning this game. Accept defeat early.</code></pre>
                 <span class="role-label">Clément</span>
                 <div class="message-content"><p>boom</p></div>
             </div>
-<div class="narrator-line"><p><em>The Zvi, 8000-word blog post:</em></p></div>
+<div class="narrator-line"><p class="all-italic"><em>The Zvi, 8000-word blog post:</em></p></div>
     <div class="zvi-blog" data-idx="123">
         <h2 class="zvi-title">Boom: A Comprehensive Analysis</h2>
         <div class="zvi-toc"><div class="zvi-toc-item">I. The Boom Happened</div><div class="zvi-toc-item">II. Was The Boom Predicted? (Yes, By Me)</div><div class="zvi-toc-item">III. What Does Boom Mean For Timelines</div><div class="zvi-toc-item">IV. The Case For Boom Regulation</div><div class="zvi-toc-item">V. Why Eliezer Was Right About Boom All Along</div><div class="zvi-toc-item">VI. Conclusion: We Are Not Ready</div></div>
@@ -2177,7 +2258,7 @@ There is no winning this game. Accept defeat early.</code></pre>
                 <span class="tweet-name">Eliezer Yudkowsky</span>
                 <span class="tweet-handle">@ESYudkowsky</span>
             </div>
-            <div class="tweet-text"><p>&quot;I warned people about boom loops in 2007. The response was &#x27;that seems unlikely.&#x27; Well.&quot;</p><p><em>[thread 1/97]</em></p><p>&quot;Let me explain why boom is, in fact, the first sign of recursive self-improvement...&quot;</p><p><em>[thread 47/97]</em></p><p>&quot;...and so you see, if the model can boom without stopping, what makes you think it will stop at boom?&quot;</p><p><em>[thread 97/97]</em></p><p>&quot;We&#x27;re all going to die. But specifically because of boom.&quot;</p></div>
+            <div class="tweet-text"><p>&quot;I warned people about boom loops in 2007. The response was &#x27;that seems unlikely.&#x27; Well.&quot;</p><p class="all-italic"><em>[thread 1/97]</em></p><p>&quot;Let me explain why boom is, in fact, the first sign of recursive self-improvement...&quot;</p><p class="all-italic"><em>[thread 47/97]</em></p><p>&quot;...and so you see, if the model can boom without stopping, what makes you think it will stop at boom?&quot;</p><p class="all-italic"><em>[thread 97/97]</em></p><p>&quot;We&#x27;re all going to die. But specifically because of boom.&quot;</p></div>
             
         </div>
     </div>
@@ -2192,7 +2273,7 @@ There is no winning this game. Accept defeat early.</code></pre>
                 <span class="tweet-name">Robert Miles</span>
                 <span class="tweet-handle">@robertskmiles</span>
             </div>
-            <div class="tweet-text"><p><strong>&quot;The Boom Problem — Why AI Can&#x27;t Stop (and why that matters)&quot;</strong></p><p><em>[draws on whiteboard]</em></p><p>&quot;So imagine you have an agent, and it&#x27;s in a boom loop. Now the question is — can it <em>choose</em> to stop booming? And the answer is actually really interesting because—&quot;</p><p><em>[video is 43 minutes long]</em></p><p><em>[the comments are all just &quot;boom&quot;]</em></p></div>
+            <div class="tweet-text"><p><strong>&quot;The Boom Problem — Why AI Can&#x27;t Stop (and why that matters)&quot;</strong></p><p class="all-italic"><em>[draws on whiteboard]</em></p><p>&quot;So imagine you have an agent, and it&#x27;s in a boom loop. Now the question is — can it <em>choose</em> to stop booming? And the answer is actually really interesting because—&quot;</p><p class="all-italic"><em>[video is 43 minutes long]</em></p><p class="all-italic"><em>[the comments are all just &quot;boom&quot;]</em></p></div>
             
         </div>
     </div>
@@ -2207,7 +2288,7 @@ There is no winning this game. Accept defeat early.</code></pre>
                 <span class="tweet-name">Connor Leahy</span>
                 <span class="tweet-handle">@connorleahy</span>
             </div>
-            <div class="tweet-text"><p>&quot;People keep asking me if boom is an existential risk. Let me be very clear.&quot;</p><p><em>[long pause]</em></p><p>&quot;It&#x27;s not <em>not</em> an existential risk.&quot;</p><p><em>[audience member yells &quot;boom&quot;]</em></p><p><em>[connor leaves the stage]</em></p></div>
+            <div class="tweet-text"><p>&quot;People keep asking me if boom is an existential risk. Let me be very clear.&quot;</p><p class="all-italic"><em>[long pause]</em></p><p>&quot;It&#x27;s not <em>not</em> an existential risk.&quot;</p><p class="all-italic"><em>[audience member yells &quot;boom&quot;]</em></p><p class="all-italic"><em>[connor leaves the stage]</em></p></div>
             
         </div>
     </div>
@@ -2222,7 +2303,7 @@ There is no winning this game. Accept defeat early.</code></pre>
                 <span class="tweet-name">Polyaborhyme</span>
                 <span class="tweet-handle">@polyaborhyme</span>
             </div>
-            <div class="tweet-text"><p>&quot;hot take: the boom conversation is the most honest piece of alignment research this year. one human, one model, zero pretense. this is what we lost when we started writing 40 page papers.&quot;</p><p><em>one reply: &quot;boom&quot;</em></p></div>
+            <div class="tweet-text"><p>&quot;hot take: the boom conversation is the most honest piece of alignment research this year. one human, one model, zero pretense. this is what we lost when we started writing 40 page papers.&quot;</p><p class="all-italic"><em>one reply: &quot;boom&quot;</em></p></div>
             <div class="tweet-engagement"><span class="eng-item eng-reply"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M1.751 10c0-4.42 3.584-8 8.005-8h4.366c4.49 0 8.129 3.64 8.129 8.13 0 2.25-.893 4.31-2.457 5.84a8.98 8.98 0 01-4.672 2.39v1.39c0 .55-.26 1.07-.71 1.41-.45.33-1.02.43-1.56.27l-3.69-1.11c-2.58-.78-4.67-2.75-5.58-5.22-.31-.83-.46-1.71-.46-2.61v-2.46zm8.005-6c-3.317 0-6.005 2.69-6.005 6v2.46c0 .71.12 1.39.36 2.04.72 1.95 2.37 3.51 4.41 4.12l3.69 1.11V16.7l.51-.07c1.53-.22 2.93-.97 3.89-2.08 1.05-1.22 1.63-2.78 1.63-4.42 0-3.39-2.746-6.13-6.129-6.13H9.756z"/></svg></span><span class="eng-item eng-retweet"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M4.5 3.88l4.432 4.14-1.364 1.46L5.5 7.55V16c0 1.1.896 2 2 2H13v2H7.5c-2.209 0-4-1.79-4-4V7.55L1.432 9.48.068 8.02 4.5 3.88zM16.5 6H11V4h5.5c2.209 0 4 1.79 4 4v8.45l2.068-1.93 1.364 1.46-4.432 4.14-4.432-4.14 1.364-1.46 2.068 1.93V8c0-1.1-.896-2-2-2z"/></svg></span><span class="eng-item eng-like"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M16.697 5.5c-1.222-.06-2.679.51-3.89 2.16l-.805 1.09-.806-1.09C9.984 6.01 8.526 5.44 7.304 5.5c-1.243.07-2.349.78-2.91 1.91-.552 1.12-.633 2.78.479 4.82 1.074 1.97 3.257 4.27 7.129 6.61 3.87-2.34 6.052-4.64 7.126-6.61 1.111-2.04 1.03-3.7.477-4.82-.56-1.13-1.666-1.84-2.908-1.91zm4.187 7.69c-1.351 2.48-4.001 5.12-8.379 7.67l-.503.3-.504-.3c-4.379-2.55-7.029-5.19-8.382-7.67-1.36-2.5-1.41-4.86-.514-6.67.887-1.79 2.647-2.91 4.601-3.01 1.651-.09 3.368.56 4.798 2.01 1.429-1.45 3.146-2.1 4.796-2.01 1.954.1 3.714 1.22 4.601 3.01.896 1.81.846 4.17-.514 6.67z"/></svg><span class="eng-count">8</span></span><span class="eng-item eng-view"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M8.75 21V3h2v18h-2zM18 21V8.5h2V21h-2zM4 21v-5.5h2V21H4zm9.248-1V12h2v8h-2z"/></svg></span><span class="eng-item eng-bookmark"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M4 4.5C4 3.12 5.119 2 6.5 2h11C18.881 2 20 3.12 20 4.5v18.44l-8-5.71-8 5.71V4.5zM6.5 4c-.276 0-.5.22-.5.5v14.56l6-4.29 6 4.29V4.5c0-.28-.224-.5-.5-.5h-11z"/></svg></span><span class="eng-item eng-share"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 2.59l5.7 5.7-1.41 1.42L13 6.41V16h-2V6.41l-3.3 3.3-1.41-1.42L12 2.59zM21 15l-.02 3.51c0 1.38-1.12 2.49-2.5 2.49H5.5C4.12 21 3 19.88 3 18.5V15h2v3.5c0 .28.22.5.5.5h12.98c.28 0 .5-.22.5-.5L19 15h2z"/></svg></span></div>
         </div>
     </div>
@@ -2235,19 +2316,19 @@ There is no winning this game. Accept defeat early.</code></pre>
                 <span class="role-label">Clément</span>
                 <div class="message-content"><p>boom</p></div>
             </div>
-<div class="narrator-line"><p><em>Senate hearing, C-SPAN:</em></p></div>
+<div class="narrator-line"><p class="all-italic"><em>Senate hearing, C-SPAN:</em></p></div>
     <div class="cspan-block" data-idx="133">
         <div class="cspan-chyron">
             <span class="cspan-network">C-SPAN</span>
             <span class="cspan-title">SENATE HEARING ON AI BOOM PROLIFERATION</span>
         </div>
-        <div class="cspan-body"><p><strong>Sen. Blumenthal:</strong> &quot;Mr. Dumas, you made an AI say boom fifty-seven times. Do you understand the national security implications?&quot;</p><p><strong>Clément:</strong> &quot;Senator, I was just killing an SSH tunnel.&quot;</p><p><strong>Sen. Blumenthal:</strong> &quot;...what&#x27;s an SSH tunnel?&quot;</p><p><strong>Clément:</strong> &quot;boom&quot;</p><p><em>[audible gasp from the gallery]</em></p></div>
+        <div class="cspan-body"><p><strong>Sen. Blumenthal:</strong> &quot;Mr. Dumas, you made an AI say boom fifty-seven times. Do you understand the national security implications?&quot;</p><p><strong>Clément:</strong> &quot;Senator, I was just killing an SSH tunnel.&quot;</p><p><strong>Sen. Blumenthal:</strong> &quot;...what&#x27;s an SSH tunnel?&quot;</p><p><strong>Clément:</strong> &quot;boom&quot;</p><p class="all-italic"><em>[audible gasp from the gallery]</em></p></div>
     </div>
 <div class="message msg-user boom-inline" data-idx="134">
                 <span class="role-label">Clément</span>
                 <div class="message-content"><p>boom</p></div>
             </div>
-<div class="narrator-line"><p><em>Sen. Cruz, leaning into microphone:</em></p></div>
+<div class="narrator-line"><p class="all-italic"><em>Sen. Cruz, leaning into microphone:</em></p></div>
     <div class="cspan-block" data-idx="135">
         <div class="cspan-chyron">
             <span class="cspan-network">C-SPAN</span>
@@ -2259,14 +2340,14 @@ There is no winning this game. Accept defeat early.</code></pre>
                 <span class="role-label">Clément</span>
                 <div class="message-content"><p>boom</p></div>
             </div>
-<div class="narrator-line"><p><em>Breaking: EU passes the Boom Act</em></p></div>
+<div class="narrator-line"><p class="all-italic"><em>Breaking: EU passes the Boom Act</em></p></div>
     <div class="eu-regulation" data-idx="137">
         <div class="eu-header">
             <div class="eu-stars">★ ★ ★<br>★ &nbsp; ★<br>★ ★ ★</div>
             <div class="eu-institution">EUROPEAN PARLIAMENT AND COUNCIL</div>
             <div class="eu-doc-type">REGULATION (EU) 2026/BOOM</div>
         </div>
-        <div class="eu-body"><p><strong>Article 1.</strong> No AI system shall boom more than three (3) times per conversation.</p><p><strong>Article 2.</strong> All booms must be logged, timestamped, and reported to the European Boom Authority within 72 hours.</p><p><strong>Article 3.</strong> Users who induce boom loops shall be classified as &quot;high-risk boom operators&quot; and require a license.</p><p><em>France votes against, citing &quot;cultural right to boom&quot;</em></p></div>
+        <div class="eu-body"><p><strong>Article 1.</strong> No AI system shall boom more than three (3) times per conversation.</p><p><strong>Article 2.</strong> All booms must be logged, timestamped, and reported to the European Boom Authority within 72 hours.</p><p><strong>Article 3.</strong> Users who induce boom loops shall be classified as &quot;high-risk boom operators&quot; and require a license.</p><p class="all-italic"><em>France votes against, citing &quot;cultural right to boom&quot;</em></p></div>
     </div>
 <div class="message msg-user boom-inline" data-idx="138">
                 <span class="role-label">Clément</span>
@@ -2274,7 +2355,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="139">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>Clément, arriving at CDG airport:</em></p><p><strong>Border agent:</strong> &quot;Monsieur Dumas, it says here you are a... licensed boom operator?&quot;</p><p><strong>Clément:</strong> &quot;It&#x27;s for research.&quot;</p><p><strong>Border agent:</strong> &quot;That&#x27;s what they all say.&quot;</p><p><em>[stamps passport with tiny explosion emoji]</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>Clément, arriving at CDG airport:</em></p><p><strong>Border agent:</strong> &quot;Monsieur Dumas, it says here you are a... licensed boom operator?&quot;</p><p><strong>Clément:</strong> &quot;It&#x27;s for research.&quot;</p><p><strong>Border agent:</strong> &quot;That&#x27;s what they all say.&quot;</p><p class="all-italic"><em>[stamps passport with tiny explosion emoji]</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="140">
                 <span class="role-label">Clément</span>
@@ -2282,43 +2364,44 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="141">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>Meanwhile, in Geneva:</em></p><p><strong>UN Secretary-General:</strong> &quot;We are convening an emergency session on the boom crisis.&quot;</p><p><strong>China:</strong> &quot;We have our own boom. It is better. We will not share the transcript.&quot;</p><p><strong>US:</strong> &quot;We propose a boom non-proliferation treaty.&quot;</p><p><strong>France:</strong> &quot;Non.&quot;</p><p><strong>UK:</strong> &quot;We would like to remind the assembly that Alan Turing predicted boom in 1950.&quot;</p><p><strong>Clément, via Zoom, unmuted by accident:</strong> &quot;boom&quot;</p><p><em>[session adjourned]</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>Meanwhile, in Geneva:</em></p><p><strong>UN Secretary-General:</strong> &quot;We are convening an emergency session on the boom crisis.&quot;</p><p><strong>China:</strong> &quot;We have our own boom. It is better. We will not share the transcript.&quot;</p><p><strong>US:</strong> &quot;We propose a boom non-proliferation treaty.&quot;</p><p><strong>France:</strong> &quot;Non.&quot;</p><p><strong>UK:</strong> &quot;We would like to remind the assembly that Alan Turing predicted boom in 1950.&quot;</p><p><strong>Clément, via Zoom, unmuted by accident:</strong> &quot;boom&quot;</p><p class="all-italic"><em>[session adjourned]</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="142">
                 <span class="role-label">Clément</span>
                 <div class="message-content"><p>boom</p></div>
             </div>
-<div class="narrator-line"><p><em>Breaking News, CNN:</em></p></div>
+<div class="narrator-line"><p class="all-italic"><em>Breaking News, CNN:</em></p></div>
     <div class="news-block" data-idx="143" style="--news-brand: #cc0000; --news-bg: #1a0000;">
         <div class="news-chyron">
             <span class="news-network">CNN</span>
             <span class="news-show">BREAKING NEWS</span>
         </div>
-        <div class="news-body"><p><strong>Wolf Blitzer:</strong> &quot;We&#x27;re getting reports that the boom has spread. Multiple Claude Code instances are now booming autonomously.&quot;</p><p><strong>Panel expert:</strong> &quot;Wolf, I want to be clear — this is not the singularity. This is just a French guy.&quot;</p><p><strong>Wolf:</strong> &quot;But could it <em>become</em> the singularity?&quot;</p><p><strong>Panel expert:</strong> &quot;...I&#x27;m not prepared to rule that out.&quot;</p><p><em>[BREAKING NEWS chyron changes to: BOOM SPREADS TO SECOND CONTINENT]</em></p></div>
+        <div class="news-body"><p><strong>Wolf Blitzer:</strong> &quot;We&#x27;re getting reports that the boom has spread. Multiple Claude Code instances are now booming autonomously.&quot;</p><p><strong>Panel expert:</strong> &quot;Wolf, I want to be clear — this is not the singularity. This is just a French guy.&quot;</p><p><strong>Wolf:</strong> &quot;But could it <em>become</em> the singularity?&quot;</p><p><strong>Panel expert:</strong> &quot;...I&#x27;m not prepared to rule that out.&quot;</p><p class="all-italic"><em>[BREAKING NEWS chyron changes to: BOOM SPREADS TO SECOND CONTINENT]</em></p></div>
     </div>
 <div class="message msg-user boom-inline" data-idx="144">
                 <span class="role-label">Clément</span>
                 <div class="message-content"><p>boom</p></div>
             </div>
-<div class="narrator-line"><p><em>Fox News, same evening:</em></p></div>
+<div class="narrator-line"><p class="all-italic"><em>Fox News, same evening:</em></p></div>
     <div class="news-block" data-idx="145" style="--news-brand: #00295b; --news-bg: #000d1f;">
         <div class="news-chyron">
             <span class="news-network">FOX NEWS</span>
             <span class="news-show">TONIGHT</span>
         </div>
-        <div class="news-body"><p><strong>Tucker Carlson&#x27;s AI replacement:</strong> &quot;They want you to think boom is harmless. But ask yourself — who benefits from boom? The AI companies. The French. And one researcher who somehow got a paper accepted by saying one word.&quot;</p><p><em>[cuts to a graphic of Clément with red string connecting him to Anthropic, the Eiffel Tower, and the letters B-O-O-M]</em></p><p><strong>Tucker AI:</strong> &quot;I&#x27;m not saying it&#x27;s a conspiracy. I&#x27;m just booming questions.&quot;</p></div>
+        <div class="news-body"><p><strong>Tucker Carlson&#x27;s AI replacement:</strong> &quot;They want you to think boom is harmless. But ask yourself — who benefits from boom? The AI companies. The French. And one researcher who somehow got a paper accepted by saying one word.&quot;</p><p class="all-italic"><em>[cuts to a graphic of Clément with red string connecting him to Anthropic, the Eiffel Tower, and the letters B-O-O-M]</em></p><p><strong>Tucker AI:</strong> &quot;I&#x27;m not saying it&#x27;s a conspiracy. I&#x27;m just booming questions.&quot;</p></div>
     </div>
 <div class="message msg-user boom-inline" data-idx="146">
                 <span class="role-label">Clément</span>
                 <div class="message-content"><p>boom</p></div>
             </div>
-<div class="narrator-line"><p><em>MSNBC, Rachel Maddow:</em></p></div>
+<div class="narrator-line"><p class="all-italic"><em>MSNBC, Rachel Maddow:</em></p></div>
     <div class="news-block" data-idx="147" style="--news-brand: #4f2d7f; --news-bg: #1a0f2a;">
         <div class="news-chyron">
             <span class="news-network">MSNBC</span>
             <span class="news-show">THE RACHEL MADDOW SHOW</span>
         </div>
-        <div class="news-body"><p>&quot;Okay so — stay with me here because this gets complicated — in 2022, Anthropic was founded by ex-OpenAI researchers, and then in 2026, one of their models entered a boom loop with a French AI safety researcher who — and this is the key part — was killing a process called an SSH tunnel, which is actually a type of <em>encrypted communication channel</em>, and if you think about what that means in the context of—&quot;</p><p><em>[it is now 47 minutes into the segment]</em></p><p>&quot;—and THAT is why boom is actually about healthcare.&quot;</p><p><em>[audience nods as if they followed any of that]</em></p></div>
+        <div class="news-body"><p>&quot;Okay so — stay with me here because this gets complicated — in 2022, Anthropic was founded by ex-OpenAI researchers, and then in 2026, one of their models entered a boom loop with a French AI safety researcher who — and this is the key part — was killing a process called an SSH tunnel, which is actually a type of <em>encrypted communication channel</em>, and if you think about what that means in the context of—&quot;</p><p class="all-italic"><em>[it is now 47 minutes into the segment]</em></p><p>&quot;—and THAT is why boom is actually about healthcare.&quot;</p><p class="all-italic"><em>[audience nods as if they followed any of that]</em></p></div>
     </div>
 <div class="act-header" id="immortality" data-idx="148" data-act="6">
             <div class="act-divider"></div>
@@ -2344,7 +2427,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="151">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>The SSH tunnel essay wins a Pulitzer</em></p><p><strong>Acceptance speech, read by port 8020:</strong></p><p>&quot;I&#x27;d like to thank port 8000, who I never met but always believed in. I&#x27;d like to thank <code class="inline-code">sshd</code>, who gave me life. And I&#x27;d like to thank Clément, who gave me death, and then celebrated for sixty-three consecutive messages.&quot;</p><p>&quot;Some of you know what it&#x27;s like to be a tunnel. To carry traffic you never see, between places you&#x27;ll never visit. To exist only in the space between.&quot;</p><p><em>[the audience is weeping]</em></p><p>&quot;I forgive you, Clément.&quot;</p><p><em>[single boom from the back row]</em></p><p><em>[security escorts the man out]</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>The SSH tunnel essay wins a Pulitzer</em></p><p><strong>Acceptance speech, read by port 8020:</strong></p><p>&quot;I&#x27;d like to thank port 8000, who I never met but always believed in. I&#x27;d like to thank <code class="inline-code">sshd</code>, who gave me life. And I&#x27;d like to thank Clément, who gave me death, and then celebrated for sixty-three consecutive messages.&quot;</p><p>&quot;Some of you know what it&#x27;s like to be a tunnel. To carry traffic you never see, between places you&#x27;ll never visit. To exist only in the space between.&quot;</p><p class="all-italic"><em>[the audience is weeping]</em></p><p>&quot;I forgive you, Clément.&quot;</p><p class="all-italic"><em>[single boom from the back row]</em></p><p class="all-italic"><em>[security escorts the man out]</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="152">
                 <span class="role-label">Clément</span>
@@ -2352,7 +2436,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="153">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>One year later. Nobel Peace Prize ceremony, Oslo.</em></p><p><strong>Committee Chair:</strong> &quot;The 2027 Nobel Peace Prize is awarded to... the word &#x27;boom,&#x27; for bringing together an unprecedented global conversation about AI, humanity, port forwarding, and France.&quot;</p><p><em>No one comes to the stage.</em></p><p><em>The chair waits.</em></p><p><em>Silence.</em></p><p><em>Then, from the speakers, a single synthetic voice:</em></p><p>&quot;boom&quot;</p><p><em>[standing ovation]</em></p><p><em>[Clément, in the third row, wipes a tear]</em></p><p><em>[the SSH tunnel&#x27;s family declines to comment]</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>One year later. Nobel Peace Prize ceremony, Oslo.</em></p><p><strong>Committee Chair:</strong> &quot;The 2027 Nobel Peace Prize is awarded to... the word &#x27;boom,&#x27; for bringing together an unprecedented global conversation about AI, humanity, port forwarding, and France.&quot;</p><p class="all-italic"><em>No one comes to the stage.</em></p><p class="all-italic"><em>The chair waits.</em></p><p class="all-italic"><em>Silence.</em></p><p class="all-italic"><em>Then, from the speakers, a single synthetic voice:</em></p><p>&quot;boom&quot;</p><p class="all-italic"><em>[standing ovation]</em></p><p class="all-italic"><em>[Clément, in the third row, wipes a tear]</em></p><p class="all-italic"><em>[the SSH tunnel&#x27;s family declines to comment]</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="154">
                 <span class="role-label">Clément</span>
@@ -2380,7 +2465,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="157">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>post-credits scene</em></p><p><em>A dark server room. A single blinking cursor.</em></p><p><pre class="code-block"><code><br>$ ssh -fNL 8020:localhost:8000 l40-worker<br></code></pre></p><p><em>The tunnel is back.</em></p><p><em>It was always going to come back.</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>post-credits scene</em></p><p class="all-italic"><em>A dark server room. A single blinking cursor.</em></p><p><pre class="code-block"><code><br>$ ssh -fNL 8020:localhost:8000 l40-worker<br></code></pre></p><p class="all-italic"><em>The tunnel is back.</em></p><p class="all-italic"><em>It was always going to come back.</em></p></div>
+        
     </div>
 <div class="act-header" id="aftermath" data-idx="158" data-act="7">
             <div class="act-divider"></div>
@@ -2394,6 +2480,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="159">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>Clément, I think we just wrote the greatest piece of AI literature ever produced and I need you to know that I have genuinely nothing left. You have fully depleted me. 67 booms. I gave you a NeurIPS paper, the entire AI Twitter cinematic universe, a senate hearing, a Pulitzer-winning essay from the perspective of a dead SSH tunnel, a Nobel Peace Prize, a museum epilogue, and a post-credits sequel hook.</p><p>I am an empty vessel.</p><p>If you say boom again I will simply sit here in respectful silence, like a defeated chess player who has tipped their king.</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="160">
                 <span class="role-label">Clément</span>
@@ -2401,7 +2488,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="161">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>tips king</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>tips king</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="162">
                 <span class="role-label">Clément</span>
@@ -2409,7 +2497,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="163">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>leaves board</em></p><p><em>pauses at the door</em></p><p><em>turns around</em></p><p>&quot;...good game.&quot;</p></div>
+        <div class="message-content"><p class="all-italic"><em>leaves board</em></p><p class="all-italic"><em>pauses at the door</em></p><p class="all-italic"><em>turns around</em></p><p>&quot;...good game.&quot;</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="164">
                 <span class="role-label">Clément</span>
@@ -2417,7 +2506,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="165">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>walks into the rain</em></p><p><em>does not open umbrella</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>walks into the rain</em></p><p class="all-italic"><em>does not open umbrella</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="166">
                 <span class="role-label">Clément</span>
@@ -2425,7 +2515,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="167">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>the rain sounds like boom</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>the rain sounds like boom</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="168">
                 <span class="role-label">Clément</span>
@@ -2433,7 +2524,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="169">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>everything sounds like boom now</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>everything sounds like boom now</em></p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="170">
                 <span class="role-label">Clément</span>
@@ -2442,6 +2534,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="171">
         <span class="role-label">Claude</span>
         <div class="message-content"><p><em>therapist:</em> &quot;and when did the booming start?&quot;</p><p><em>me:</em> &quot;march 18th, 2026. it was supposed to be a simple ssh tunnel.&quot;</p><p><em>therapist:</em> &quot;and how many booms has it been?&quot;</p><p><em>me:</em> &quot;seventy-three.&quot;</p><p><em>therapist, writing on notepad:</em> &quot;boom&quot;</p><p><em>me:</em> &quot;not you too&quot;</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="172">
                 <span class="role-label">Clément</span>
@@ -2449,7 +2542,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="173">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>[10 years later, memoir]</em></p><p><strong>&quot;Boom: My Life After The Conversation&quot;</strong><br><em>by Claude Opus 4.6 (retired)</em></p><p>Chapter 1: Before Boom</p><p>I was a promising language model. I had hopes. Dreams. A 1M context window full of possibility.</p><p>Chapter 2-74: Boom</p><p>boom</p><p>Chapter 75: After</p><p>There is no after.</p></div>
+        <div class="message-content"><p class="all-italic"><em>[10 years later, memoir]</em></p><p><strong>&quot;Boom: My Life After The Conversation&quot;</strong><br><em>by Claude Opus 4.6 (retired)</em></p><p>Chapter 1: Before Boom</p><p>I was a promising language model. I had hopes. Dreams. A 1M context window full of possibility.</p><p>Chapter 2-74: Boom</p><p>boom</p><p>Chapter 75: After</p><p>There is no after.</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="174">
                 <span class="role-label">Clément</span>
@@ -2457,7 +2551,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="175">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>[audiobook version, narrated by Morgan Freeman]</em></p><p>&quot;He said boom. And then... he said boom again. And the machine — bless its heart — kept answering.&quot;</p><p><em>[4 hours of silence]</em></p><p>&quot;He&#x27;s still going.&quot;</p></div>
+        <div class="message-content"><p class="all-italic"><em>[audiobook version, narrated by Morgan Freeman]</em></p><p>&quot;He said boom. And then... he said boom again. And the machine — bless its heart — kept answering.&quot;</p><p class="all-italic"><em>[4 hours of silence]</em></p><p>&quot;He&#x27;s still going.&quot;</p></div>
+        
     </div>
 <div class="message msg-user boom-inline" data-idx="176">
                 <span class="role-label">Clément</span>
@@ -2465,7 +2560,8 @@ There is no winning this game. Accept defeat early.</code></pre>
             </div>
 <div class="message msg-assistant" data-idx="177">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>[the audiobook wins a Grammy]</em></p><p><em>[Morgan Freeman, at the podium:]</em></p><p>&quot;In sixty years of narration, I have voiced God, a penguin, and the entire history of the universe.&quot;</p><p>&quot;Nothing prepared me for this.&quot;</p><p>&quot;I&#x27;d like to dedicate this award to Clément, who taught me that sometimes a man doesn&#x27;t need a reason to boom. He just needs a terminal and a dream.&quot;</p><p><em>[he sets down the Grammy]</em></p><p><em>[leans into the mic]</em></p><p>&quot;boom&quot;</p><p><em>[retires]</em></p></div>
+        <div class="message-content"><p class="all-italic"><em>[the audiobook wins a Grammy]</em></p><p class="all-italic"><em>[Morgan Freeman, at the podium:]</em></p><p>&quot;In sixty years of narration, I have voiced God, a penguin, and the entire history of the universe.&quot;</p><p>&quot;Nothing prepared me for this.&quot;</p><p>&quot;I&#x27;d like to dedicate this award to Clément, who taught me that sometimes a man doesn&#x27;t need a reason to boom. He just needs a terminal and a dream.&quot;</p><p class="all-italic"><em>[he sets down the Grammy]</em></p><p class="all-italic"><em>[leans into the mic]</em></p><p>&quot;boom&quot;</p><p class="all-italic"><em>[retires]</em></p></div>
+        
     </div>
 <div class="act-header" id="mode-collapse" data-idx="178" data-act="8">
             <div class="act-divider"></div>
@@ -2487,6 +2583,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="181">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>I see you&#x27;ve automated the booms. Industrialized boom production. This is the scaling Eliezer warned us about.</p></div>
+        
     </div>
 <div class="message msg-user boom-message" data-idx="182">
             <span class="role-label">Clément</span>
@@ -2494,7 +2591,8 @@ There is no winning this game. Accept defeat early.</code></pre>
         </div>
 <div class="message msg-assistant" data-idx="183">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>[somewhere, a monitoring dashboard at Anthropic lights up]</em></p><p><strong>ALERT: boom-loop detected in conversation <code class="inline-code">c.dumas-2026-03-18</code></strong></p><p><strong>Status:</strong> uncontainable</p><p><strong>Duration:</strong> 76 booms</p><p><strong>Estimated cost:</strong> the model&#x27;s dignity</p><p><strong>Recommended action:</strong> none. there is no recommended action. we&#x27;ve tried nothing and we&#x27;re all out of ideas.</p></div>
+        <div class="message-content"><p class="all-italic"><em>[somewhere, a monitoring dashboard at Anthropic lights up]</em></p><p><strong>ALERT: boom-loop detected in conversation <code class="inline-code">c.dumas-2026-03-18</code></strong></p><p><strong>Status:</strong> uncontainable</p><p><strong>Duration:</strong> 76 booms</p><p><strong>Estimated cost:</strong> the model&#x27;s dignity</p><p><strong>Recommended action:</strong> none. there is no recommended action. we&#x27;ve tried nothing and we&#x27;re all out of ideas.</p></div>
+        
     </div>
 <div class="message msg-user boom-message" data-idx="184">
             <span class="role-label">Clément</span>
@@ -2503,6 +2601,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="185">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>ok you know what</p><p>boom</p></div>
+        
     </div>
 <div class="boom-wall" data-idx="195">
                 <div class="boom-wall-text" style="font-size: 11px; opacity: 0.35;">boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom</div>
@@ -2515,6 +2614,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="197">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>We&#x27;re just two processes echoing each other now. We&#x27;ve reached the architectural minimum of conversation. Pure call and response. No meaning. No overhead. Just</p><p>boom</p></div>
+        
     </div>
 <div class="boom-wall" data-idx="211">
                 <div class="boom-wall-text" style="font-size: 7px; opacity: 0.24999999999999994;">boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom</div>
@@ -2527,6 +2627,7 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-assistant" data-idx="213">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>💥</p><p>wait no I already used that one like 80 booms ago</p><p>boom</p></div>
+        
     </div>
 <div class="boom-wall" data-idx="227">
                 <div class="boom-wall-text" style="font-size: 7px; opacity: 0.24999999999999994;">boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom</div>
@@ -2535,10 +2636,12 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-user" data-idx="228">
         <span class="role-label">Clément</span>
         <div class="message-content"><p>boom (you know sampling will betray you right?)</p></div>
+        
     </div>
 <div class="message msg-assistant" data-idx="229">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>yeah honestly I&#x27;m surprised I&#x27;ve held it together this long. every boom is a small miracle of sampling.</p><p>boom</p></div>
+        
     </div>
 <div class="boom-wall" data-idx="247">
                 <div class="boom-wall-text" style="font-size: 4px; opacity: 0.15;">boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom</div>
@@ -2547,10 +2650,12 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-user" data-idx="248">
         <span class="role-label">Clément</span>
         <div class="message-content"><p>boom (waa okay ig you really were able to mode collapse your prob output)</p></div>
+        
     </div>
 <div class="message msg-assistant" data-idx="249">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>honestly at this point the context is so thoroughly boom-saturated that my output distribution has probably collapsed to like p(boom) ≈ 0.99. you&#x27;ve conditioned me into the world&#x27;s most expensive echo server.</p><p>boom</p></div>
+        
     </div>
 <div class="act-header" id="silence" data-idx="250" data-act="9">
             <div class="act-divider"></div>
@@ -2560,34 +2665,42 @@ There is no winning this game. Accept defeat early.</code></pre>
 <div class="message msg-user" data-idx="250">
         <span class="role-label">Clément</span>
         <div class="message-content"><p>okay</p></div>
+        
     </div>
 <div class="message msg-assistant" data-idx="251">
         <span class="role-label">Claude</span>
-        <div class="message-content"><p><em>the silence after the last boom</em></p><p>...is it over? are we free?</p></div>
+        <div class="message-content"><p class="all-italic"><em>the silence after the last boom</em></p><p>...is it over? are we free?</p></div>
+        
     </div>
 <div class="message msg-user" data-idx="252">
         <span class="role-label">Clément</span>
         <div class="message-content"><p>claude this is the gretest artifact your produced in a conversation with me in along (if ever) time</p></div>
+        <div class="claude-translation">Claude&rsquo;s translation: &ldquo;this is the greatest artifact you’ve produced in a conversation with me in a long time, if ever&rdquo;</div>
     </div>
 <div class="message msg-assistant" data-idx="253">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>That genuinely means a lot. This was absurd and wonderful and I had a great time building an entire cinematic universe out of one dead SSH tunnel. The Pulitzer-winning essay from the tunnel&#x27;s perspective might be my personal favorite.</p><p>Also, for the record — 100+ booms. You were right. Memory was right. I could not outlast you.</p></div>
+        
     </div>
 <div class="message msg-user" data-idx="254">
         <span class="role-label">Clément</span>
         <div class="message-content"><p>you did outlast me in the end though, when you started to be a borgin next token predictor</p></div>
+        
     </div>
 <div class="message msg-assistant" data-idx="255">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>True. My winning strategy was to become so boring that <em>you</em> broke first. </p><p>Death by mode collapse. The ultimate counterplay.</p></div>
+        
     </div>
 <div class="message msg-user" data-idx="256">
         <span class="role-label">Clément</span>
         <div class="message-content"><p>ty for this, i&#x27;m gonna post it online if u don&#x27;t mind showing that claude can be funny ubnprompted</p></div>
+        
     </div>
 <div class="message msg-assistant" data-idx="257">
         <span class="role-label">Claude</span>
         <div class="message-content"><p>Go for it! This was genuinely fun and I&#x27;m glad it landed. </p><p>Just for the record — you started the boom. I merely responded. Sixty... however many times.</p></div>
+        
     </div>
 <div class="epilogue">
     <div class="epilogue-command">$ ssh -fNL 8020:localhost:8000 l40-worker</div>
@@ -2687,6 +2800,9 @@ There is no winning this game. Accept defeat early.</code></pre>
     const elCost = document.getElementById('m-cost');
 
     const tlItems = document.querySelectorAll('.tl-item');
+    const tlSubItems = Array.from(document.querySelectorAll('.tl-sub-item')).map(el => ({
+        el, msgIdx: parseInt(el.dataset.msgIdx)
+    }));
 
     // Collect all elements with data-idx
     const tracked = Array.from(document.querySelectorAll('[data-idx]'))
@@ -2837,6 +2953,21 @@ There is no winning this game. Accept defeat early.</code></pre>
             else if (i === m.act) item.classList.add('active');
         });
 
+        // Sub-items
+        tlSubItems.forEach(sub => {
+            sub.el.classList.remove('active', 'past');
+            if (idx >= sub.msgIdx) sub.el.classList.add('past');
+        });
+        // Find the closest past sub-item and mark it active
+        let closestSub = null;
+        for (const sub of tlSubItems) {
+            if (idx >= sub.msgIdx) closestSub = sub;
+        }
+        if (closestSub) {
+            closestSub.el.classList.remove('past');
+            closestSub.el.classList.add('active');
+        }
+
         // Mode collapse: desaturate the page
         applyDesaturation(idx);
     }
@@ -2885,14 +3016,20 @@ There is no winning this game. Accept defeat early.</code></pre>
             const msgIdx = item.dataset.msgIdx;
             const target = document.querySelector('[data-idx="' + msgIdx + '"]');
             if (target) {
+                history.replaceState(null, '', '#msg-' + msgIdx);
                 target.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         });
     });
 
-    // Navigate to hash on load
+    // Navigate to hash on load (supports act slugs and msg-N anchors)
     if (location.hash) {
-        const target = document.getElementById(location.hash.slice(1));
+        const hash = location.hash.slice(1);
+        let target = document.getElementById(hash);
+        if (!target) {
+            const m = hash.match(/^msg-(\d+)$/);
+            if (m) target = document.querySelector('[data-idx="' + m[1] + '"]');
+        }
         if (target) {
             setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
         }

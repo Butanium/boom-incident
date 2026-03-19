@@ -7,7 +7,7 @@
     --bg-message-ai: #0f1218;
     --bg-sidebar: #0d0d10;
     --text: #c8c5be;
-    --text-dim: #6b6860;
+    --text-dim: #8a8780;
     --text-bright: #eae7df;
     --accent: #e85d3a;
     --accent-glow: #e85d3a33;
@@ -55,7 +55,7 @@ body {
 
 .hero-pretitle {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
+    font-size: 0.95rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--accent-dim);
@@ -87,8 +87,8 @@ body {
 .hero-subtitle {
     font-family: 'Source Serif 4', serif;
     font-style: italic;
-    font-size: 1.2rem;
-    color: var(--text-dim);
+    font-size: 1.5rem;
+    color: var(--text);
     max-width: 32em;
     margin-bottom: 3rem;
     position: relative;
@@ -96,13 +96,21 @@ body {
 
 .hero-meta {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--text-dim);
-    letter-spacing: 0.15em;
+    font-size: 1rem;
+    color: var(--text);
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.hero-meta span { margin: 0 1em; }
+.hero-meta span { margin: 0 0.8em; }
+.hero-meta span:first-child,
+.hero-meta span:last-child {
+    width: 10em;
+}
+.hero-meta span:first-child { text-align: right; }
+.hero-meta span:last-child { text-align: left; }
 
 .scroll-hint {
     position: absolute;
@@ -125,7 +133,7 @@ body {
 /* ==================== LAYOUT ==================== */
 .layout {
     display: grid;
-    grid-template-columns: 240px 1fr 260px;
+    grid-template-columns: 260px 1fr 260px;
     max-width: 1400px;
     margin: 0 auto;
     gap: 0;
@@ -168,9 +176,9 @@ body {
 
 .tl-dot {
     position: absolute;
-    left: -12.5px;
+    left: -11.5px;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
     width: 7px;
     height: 7px;
     border-radius: 50%;
@@ -185,7 +193,6 @@ body {
     box-shadow: 0 0 8px var(--accent-glow);
     width: 9px;
     height: 9px;
-    left: -13.5px;
 }
 
 .tl-label {
@@ -228,11 +235,11 @@ body {
 
 .tl-sub-dot {
     position: absolute;
-    left: -10.5px;
+    left: -11.5px;
     top: 50%;
-    transform: translateY(-50%);
-    width: 4px;
-    height: 4px;
+    transform: translate(-50%, -50%);
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     background: var(--border);
     transition: all 0.3s ease;
@@ -251,13 +258,20 @@ body {
     text-overflow: ellipsis;
 }
 
-.tl-sub-item:hover .tl-sub-label {
+.tl-sub-item:hover .tl-sub-label,
+.tl-sub-item.active .tl-sub-label {
     opacity: 1;
     color: var(--text-bright);
 }
 
-.tl-sub-item:hover .tl-sub-dot {
+.tl-sub-item:hover .tl-sub-dot,
+.tl-sub-item.active .tl-sub-dot {
     background: var(--accent-dim);
+}
+
+.tl-sub-item.past .tl-sub-dot {
+    background: var(--accent-dim);
+    opacity: 0.5;
 }
 
 /* ==================== TRANSCRIPT (center) ==================== */
@@ -677,7 +691,8 @@ body {
     line-height: 1.5;
 }
 
-.tweet-text em { color: #71767b; font-style: italic; }
+.tweet-text em { font-style: italic; }
+.tweet-text p.all-italic em { color: #8b9099; }
 .tweet-text strong { color: #e7e9ea; }
 .tweet-text p { margin-bottom: 0.4em; }
 .tweet-text p:last-child { margin-bottom: 0; }
@@ -786,9 +801,9 @@ body {
 }
 
 .tweet-reply .tweet-avatar {
-    width: 24px;
-    height: 24px;
-    font-size: 0.65rem;
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
     flex-shrink: 0;
 }
 
@@ -1039,6 +1054,18 @@ body {
 
 .narrator-line em { color: var(--text-dim); }
 .narrator-line p { margin: 0; }
+
+/* ==================== CLAUDE'S TRANSLATIONS ==================== */
+.claude-translation {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-style: italic;
+    color: var(--ai-color);
+    margin-top: 0.5rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--border);
+    opacity: 0.7;
+}
 
 /* ==================== ANTHROPIC BLOG ==================== */
 .anthropic-blog {
