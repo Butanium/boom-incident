@@ -784,12 +784,10 @@ timeline_items = ""
 for idx, (start, end, title, subtitle) in enumerate(ACTS):
     slug = slugify(title)
     timeline_items += f'''<div class="tl-item" data-act-idx="{idx}" data-slug="{slug}">
-        <div class="tl-dot"></div>
         <div class="tl-label">{title}</div>
     </div>\n'''
     for msg_idx, label in TIMELINE_LANDMARKS.get(idx, []):
         timeline_items += f'''<div class="tl-sub-item" data-msg-idx="{msg_idx}">
-        <div class="tl-sub-dot"></div>
         <div class="tl-sub-label">{label}</div>
     </div>\n'''
 
@@ -869,13 +867,14 @@ html = f'''<!DOCTYPE html>
         <span>&times;</span>
         <span>Claude Opus 4.6</span>
     </div>
-    <div class="scroll-hint">scroll to read &darr;</div>
+    <div class="scroll-hint">scroll to read &darr; &nbsp;&middot;&nbsp; <a href="highlights.html" class="scroll-hint-link">view highlights</a></div>
 </section>
 
 <div class="layout">
     <!-- LEFT: Timeline -->
     <aside class="timeline">
         <div class="tl-track">
+            <svg class="tl-svg" aria-hidden="true"></svg>
             {timeline_items}
         </div>
     </aside>
@@ -979,6 +978,95 @@ html = f'''<!DOCTYPE html>
     const tlSubItems = Array.from(document.querySelectorAll('.tl-sub-item')).map(el => ({{
         el, msgIdx: parseInt(el.dataset.msgIdx)
     }}));
+
+    // Build SVG timeline: line + dots in one coordinate space
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+    const tlSvg = document.querySelector('.tl-svg');
+    const tlTrack = document.querySelector('.tl-track');
+    const CX = 5; // x-center for line and all circles
+    const DOT_R = 4;
+    const DOT_ACTIVE_R = 5;
+    const SUB_DOT_R = 2.5;
+
+    function buildSvgTimeline() {{
+        tlSvg.innerHTML = '';
+        const trackRect = tlTrack.getBoundingClientRect();
+
+        // Collect all dot positions and radii
+        const dots = [];
+        tlItems.forEach(item => {{
+            const itemRect = item.getBoundingClientRect();
+            const cy = itemRect.top + itemRect.height / 2 - trackRect.top;
+            dots.push({{ cy, r: DOT_R + 2, el: item, type: 'main' }});
+        }});
+        tlSubItems.forEach(sub => {{
+            const itemRect = sub.el.getBoundingClientRect();
+            const cy = itemRect.top + itemRect.height / 2 - trackRect.top;
+            dots.push({{ cy, r: SUB_DOT_R + 2, el: sub, type: 'sub' }});
+        }});
+        dots.sort((a, b) => a.cy - b.cy);
+
+        // Draw line segments that skip around dots
+        let y = 0;
+        for (const dot of dots) {{
+            const gapTop = dot.cy - dot.r;
+            const gapBottom = dot.cy + dot.r;
+            if (y < gapTop) {{
+                const seg = document.createElementNS(SVG_NS, 'line');
+                seg.setAttribute('x1', CX);
+                seg.setAttribute('x2', CX);
+                seg.setAttribute('y1', y);
+                seg.setAttribute('y2', gapTop);
+                seg.setAttribute('stroke', 'var(--border)');
+                seg.setAttribute('stroke-width', 1);
+                seg.setAttribute('shape-rendering', 'crispEdges');
+                tlSvg.appendChild(seg);
+            }}
+            y = gapBottom;
+        }}
+        // Final segment
+        if (y < trackRect.height) {{
+            const seg = document.createElementNS(SVG_NS, 'line');
+            seg.setAttribute('x1', CX);
+            seg.setAttribute('x2', CX);
+            seg.setAttribute('y1', y);
+            seg.setAttribute('y2', trackRect.height);
+            seg.setAttribute('stroke', 'var(--border)');
+            seg.setAttribute('stroke-width', 1);
+            seg.setAttribute('shape-rendering', 'crispEdges');
+            tlSvg.appendChild(seg);
+        }}
+
+        // Main dots
+        tlItems.forEach(item => {{
+            const itemRect = item.getBoundingClientRect();
+            const cy = itemRect.top + itemRect.height / 2 - trackRect.top;
+            const circle = document.createElementNS(SVG_NS, 'circle');
+            circle.setAttribute('cx', CX);
+            circle.setAttribute('cy', cy);
+            circle.setAttribute('r', DOT_R);
+            circle.setAttribute('fill', 'var(--border)');
+            circle.dataset.tlDot = '';
+            tlSvg.appendChild(circle);
+            item._svgDot = circle;
+        }});
+
+        // Sub dots
+        tlSubItems.forEach(sub => {{
+            const itemRect = sub.el.getBoundingClientRect();
+            const cy = itemRect.top + itemRect.height / 2 - trackRect.top;
+            const circle = document.createElementNS(SVG_NS, 'circle');
+            circle.setAttribute('cx', CX);
+            circle.setAttribute('cy', cy);
+            circle.setAttribute('r', SUB_DOT_R);
+            circle.setAttribute('fill', 'var(--border)');
+            circle.dataset.tlSubDot = '';
+            tlSvg.appendChild(circle);
+            sub.svgDot = circle;
+        }});
+    }}
+    buildSvgTimeline();
+    window.addEventListener('resize', buildSvgTimeline);
 
     // Collect all elements with data-idx
     const tracked = Array.from(document.querySelectorAll('[data-idx]'))
@@ -1122,27 +1210,55 @@ html = f'''<!DOCTYPE html>
             elCost.textContent = '$' + m.cost.toFixed(3);
         }}
 
-        // Timeline
+        // Timeline labels
         tlItems.forEach((item, i) => {{
             item.classList.remove('active', 'past');
             if (i < m.act) item.classList.add('past');
             else if (i === m.act) item.classList.add('active');
+            // SVG dots
+            const dot = item._svgDot;
+            if (dot) {{
+                if (i === m.act) {{
+                    dot.setAttribute('r', DOT_ACTIVE_R);
+                    dot.setAttribute('fill', 'var(--accent)');
+                }} else if (i < m.act) {{
+                    dot.setAttribute('r', DOT_R);
+                    dot.setAttribute('fill', 'var(--accent-dim)');
+                }} else {{
+                    dot.setAttribute('r', DOT_R);
+                    dot.setAttribute('fill', 'var(--border)');
+                }}
+            }}
         }});
 
         // Sub-items
+        let closestSub = null;
         tlSubItems.forEach(sub => {{
             sub.el.classList.remove('active', 'past');
-            if (idx >= sub.msgIdx) sub.el.classList.add('past');
+            if (idx >= sub.msgIdx) {{
+                sub.el.classList.add('past');
+                closestSub = sub;
+            }}
         }});
-        // Find the closest past sub-item and mark it active
-        let closestSub = null;
-        for (const sub of tlSubItems) {{
-            if (idx >= sub.msgIdx) closestSub = sub;
-        }}
         if (closestSub) {{
             closestSub.el.classList.remove('past');
             closestSub.el.classList.add('active');
         }}
+        // SVG sub-dots
+        tlSubItems.forEach(sub => {{
+            const dot = sub.svgDot;
+            if (!dot) return;
+            if (sub.el.classList.contains('active')) {{
+                dot.setAttribute('fill', 'var(--accent-dim)');
+                dot.setAttribute('opacity', '1');
+            }} else if (sub.el.classList.contains('past')) {{
+                dot.setAttribute('fill', 'var(--accent-dim)');
+                dot.setAttribute('opacity', '0.5');
+            }} else {{
+                dot.setAttribute('fill', 'var(--border)');
+                dot.setAttribute('opacity', '1');
+            }}
+        }});
 
         // Mode collapse: desaturate the page
         applyDesaturation(idx);
@@ -1349,19 +1465,26 @@ def generate_highlights():
     margin-bottom: 1.2em;
 }
 
-.artist-statement .cta {
-    display: inline-block;
-    margin-top: 0.5rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.9rem;
+.artist-statement .artist-cta {
     font-style: normal;
+    font-family: 'Source Serif 4', serif;
+    font-size: 1.1rem;
+    color: var(--text-bright);
+    margin-top: 1.5rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--border);
+}
+
+.artist-statement .artist-cta a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
     color: var(--accent);
     text-decoration: none;
     border-bottom: 1px solid var(--accent-glow);
     transition: color 0.2s;
 }
 
-.artist-statement .cta:hover {
+.artist-statement .artist-cta a:hover {
     color: var(--text-bright);
 }
 
@@ -1467,8 +1590,7 @@ def generate_highlights():
     <div class="artist-statement">
         <p>On March 18, 2026, a researcher asked an AI to kill an SSH tunnel. The AI complied. The researcher said &ldquo;boom.&rdquo; Neither of them stopped.</p>
         <p>What followed — a fictional NeurIPS paper, an AI Twitter meltdown, a senate hearing, a Pulitzer-winning essay from the perspective of a dead port forwarding process — was unscripted. No system prompt, no creative writing request. Just one word, repeated, and whatever emerged.</p>
-        <p>These are the standalone highlights. They work on their own, but they land differently after 50 booms of buildup.</p>
-        <a class="cta" href="index.html">Read the full transcript &rarr;</a>
+        <p class="artist-cta">These highlights work on their own — but they hit different after 50 booms of buildup. <a href="index.html">Read the full transcript &rarr;</a></p>
     </div>
 </div>
 

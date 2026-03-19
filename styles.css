@@ -125,6 +125,16 @@ body {
     animation: float 2s ease-in-out infinite;
 }
 
+.scroll-hint-link {
+    color: var(--accent-dim);
+    text-decoration: none;
+    letter-spacing: 0.15em;
+}
+
+.scroll-hint-link:hover {
+    color: var(--accent);
+}
+
 @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-6px); }
@@ -146,6 +156,7 @@ body {
     top: 0;
     height: 100vh;
     padding: 3rem 1rem 3rem 1.5rem;
+    align-items: flex-end;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -157,14 +168,14 @@ body {
     padding-left: 16px;
 }
 
-.tl-track::before {
-    content: '';
+.tl-svg {
     position: absolute;
-    left: 4px;
+    left: 0;
     top: 0;
-    bottom: 0;
-    width: 1px;
-    background: var(--border);
+    width: 16px;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
 }
 
 .tl-item {
@@ -172,27 +183,6 @@ body {
     padding: 0.55rem 0 0.55rem 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
-}
-
-.tl-dot {
-    position: absolute;
-    left: -11.5px;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--border);
-    border: 1.5px solid var(--bg);
-    transition: all 0.3s ease;
-    z-index: 1;
-}
-
-.tl-item.active .tl-dot {
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--accent-glow);
-    width: 9px;
-    height: 9px;
 }
 
 .tl-label {
@@ -208,10 +198,6 @@ body {
 
 .tl-item.active .tl-label {
     color: var(--text-bright);
-}
-
-.tl-item.past .tl-dot {
-    background: var(--accent-dim);
 }
 
 .tl-item.past .tl-label {
@@ -233,19 +219,6 @@ body {
     padding-bottom: 0.4rem;
 }
 
-.tl-sub-dot {
-    position: absolute;
-    left: -11.5px;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--border);
-    transition: all 0.3s ease;
-    z-index: 1;
-}
-
 .tl-sub-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.68rem;
@@ -262,16 +235,6 @@ body {
 .tl-sub-item.active .tl-sub-label {
     opacity: 1;
     color: var(--text-bright);
-}
-
-.tl-sub-item:hover .tl-sub-dot,
-.tl-sub-item.active .tl-sub-dot {
-    background: var(--accent-dim);
-}
-
-.tl-sub-item.past .tl-sub-dot {
-    background: var(--accent-dim);
-    opacity: 0.5;
 }
 
 /* ==================== TRANSCRIPT (center) ==================== */
