@@ -1336,7 +1336,10 @@ html = f'''<!DOCTYPE html>
 </body>
 </html>'''
 
-with open(os.path.join(SCRIPT_DIR, "index.html"), "w") as f:
+BUILD_DIR = os.path.join(SCRIPT_DIR, "build")
+os.makedirs(BUILD_DIR, exist_ok=True)
+
+with open(os.path.join(BUILD_DIR, "index.html"), "w") as f:
     f.write(html)
 
 print(f"Generated! {total_messages} messages, {total_user_booms} user booms")
@@ -1610,7 +1613,7 @@ def generate_highlights():
 
 
 highlights_html = generate_highlights()
-with open(os.path.join(SCRIPT_DIR, "highlights.html"), "w") as f:
+with open(os.path.join(BUILD_DIR, "highlights.html"), "w") as f:
     f.write(highlights_html)
 
 print(f"Generated highlights.html with {sum(len(items) for _, items in HIGHLIGHTS)} highlight cards")
